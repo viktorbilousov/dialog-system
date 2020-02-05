@@ -4,7 +4,14 @@ import models.Answer
 import models.Indexable;
 
 interface IDialogItem : Indexable {
-    fun beforeRun(inputAnswer: Answer)
-    fun afterRun(outputAnswer: Answer)
-    fun run(inputAnswer: Answer) : Answer
+    open fun before(inputAnswer: Answer){}
+    open fun after(outputAnswer: Answer){}
+    fun body(inputAnswer: Answer) : Answer
+
+    fun run(inputAnswer: Answer): Answer{
+        before(inputAnswer)
+        val res = body(inputAnswer)
+        after(res);
+        return res
+    }
 }

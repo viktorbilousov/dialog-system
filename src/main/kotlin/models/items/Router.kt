@@ -21,5 +21,4 @@ class Router(private val id: String, private val graph: Graph, private val start
     override fun getId(): String {
         return id;
     }
-
 }
