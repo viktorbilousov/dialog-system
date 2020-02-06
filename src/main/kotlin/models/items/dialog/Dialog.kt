@@ -34,10 +34,17 @@ class Dialog : IDialogItem {
             if(answer.type == AnswerType.EXIT){
                 logger.info("return ${answer.getId()}")
                 logger.info("[$id] << body DIALOG: $id")
+                answer.type=AnswerType.SIMPLE;
                 return answer;
+            }else if (answer.type == AnswerType.ENTER) {
+                currentItem = router.get(answer) // todo ?
+            }else {
+                currentItem = router.get(answer)
             }
-            currentItem = router.get(answer)
         }
+    }
+    public fun addItem(item: IDialogItem){
+        router.addItem(item);
     }
 
     override fun clone(): IDialogItem {
