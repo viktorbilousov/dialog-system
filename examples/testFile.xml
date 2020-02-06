@@ -1,9 +1,1 @@
-<?xml version="1.0" ?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.1/graphml.xsd">
-    <key id="name" for="node" attr.name="name" attr.type="string"></key>
-    <key id="lang" for="node" attr.name="lang" attr.type="string"></key>
-    <key id="age" for="node" attr.name="age" attr.type="int"></key>
-    <key id="weight" for="edge" attr.name="weight" attr.type="float"></key>
-    <graph id="G" edgedefault="directed"></graph>
-</graphml>
+<?xml version="1.0" ?><graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.1/graphml.xsd"><key id="vId" for="node" attr.name="vId" attr.type="string"></key><graph id="G" edgedefault="directed"><node id="1"><data key="vId">phrase.1</data></node><node id="2"><data key="vId">phrase.2</data></node><node id="3"><data key="vId">phrase.3</data></node><node id="4"><data key="vId">phrase.4</data></node><node id="5"><data key="vId">phrase.5</data></node><edge id="0" source="1" target="2" label="[edge 1-2]"></edge><edge id="2" source="2" target="4" label="[edge 2-&gt;4]"></edge><edge id="1" source="2" target="3" label="[edge 2-&gt;3]"></edge><edge id="4" source="3" target="5" label="[edge 3-&gt;5]"></edge><edge id="3" source="4" target="5" label="[edge 4-&gt;5]"></edge></graph></graphml>

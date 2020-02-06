@@ -1,19 +1,21 @@
 package models.items.phrase
 
 import models.Answer
-import models.items.text.IPhraseText
+import models.items.IDialogItem
+import models.items.text.MultiplyPhraseText
 import models.items.text.SinglePhraseText
 import tools.PhrasePrinter
-import kotlin.streams.toList
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-class SimplePhrase(private val id: String) : IPhrase<SinglePhraseText>() {
+class SimplePhrase(private val id: String) : IPhrase<SinglePhraseText> {
 
+    companion object{
+        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+    }
+    private lateinit var text: SinglePhraseText
 
-    private var text: SinglePhraseText? = null
-    private var answers = ArrayList<Answer>()
-
-    constructor(id: String, text: SinglePhraseText, answers: Array<Answer>) : this(id) {
-        this.answers.addAll(answers)
+    constructor(id: String, text: SinglePhraseText) : this(id) {
         this.text = text;
     }
 
@@ -21,16 +23,26 @@ class SimplePhrase(private val id: String) : IPhrase<SinglePhraseText>() {
         this.text = phrase;
     }
 
-    override fun addAnswer(answer: Answer) {
-        this.answers.add(answer);
-    }
-
     override fun body(inputAnswer: Answer): Answer {
-        return PhrasePrinter.printTextDialog(text!!.getTexts()[0], answers.toTypedArray())
+        logger.info("[$id]>> body SIMPLE Phrase: input = $inputAnswer")
+        val res =  PhrasePrinter.printTextDialog(text!!.getTexts()[0], text!!.getAnswers())
+        logger.info("[$id]<< body SIMPLE Phrase: output = $res")
+        return res;
     }
 
 
     override fun getId(): String {
         return id;
+    }
+
+    override fun clone(): IDialogItem {
+        return SimplePhrase(
+            id,
+            SinglePhraseText(
+                text.getId(),
+                text.getTexts()[0],
+                text.getAnswers()
+            )
+        )
     }
 }

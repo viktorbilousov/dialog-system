@@ -4,10 +4,8 @@ import models.Answer
 import models.items.IDialogItem
 import models.items.text.IPhraseText
 
-abstract class IPhrase<P : IPhraseText>: IDialogItem {
-    abstract fun addText(phrase: P)
-    abstract fun addAnswer(answer: Answer)
-
+interface IPhrase<P : IPhraseText>: IDialogItem {
+    fun addText(phrase: P)
 
     //fun getText() : String
     //fun getAnswers() : Array<Answer>?

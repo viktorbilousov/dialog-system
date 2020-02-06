@@ -2,6 +2,7 @@ package tools
 import models.Answer
 import models.items.phrase.IPhrase
 import java.lang.StringBuilder
+import java.util.*
 
 class PhrasePrinter {
     companion object{
@@ -10,13 +11,15 @@ class PhrasePrinter {
             builder.append(text);
             builder.append("\n\n\n")
             for(i in 0 until answer.size){
-                builder.append("[${i+1}] ${answer[i]}\n")
+                builder.append("[${i+1}] ${answer[i].text}\n")
             }
             return builder.toString()
         }
         public fun input(answer: Array<Answer>): Answer{
             while (true) {
-                val stringInput = readLine()!!;
+                println("Enter the number:\n>")
+                val input = Scanner(System.`in`)
+                val stringInput = input.nextLine()
                 val num = stringInput.toIntOrNull();
                 if (num == null || num > answer.size || num < 1) {
                     println("InputError: please enter number")
