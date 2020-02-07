@@ -51,4 +51,8 @@ class RandomPhrase : IPhrase<MultiplyPhraseText> {
             )
         )
     }
+
+    override fun getAnswers(): Array<Answer> {
+        return text.getAnswers();
+    }
 }

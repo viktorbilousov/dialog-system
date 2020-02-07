@@ -36,4 +36,6 @@ interface IDialogItem : Indexable {
         logger.info("[${getId()}]  end body")
         return res
     }
+
+    fun getAnswers(): Array<Answer>;
 }

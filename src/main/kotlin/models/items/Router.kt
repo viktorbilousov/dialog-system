@@ -3,6 +3,7 @@ package models.items
 import com.tinkerpop.blueprints.Direction
 import models.Indexable;
 import com.tinkerpop.blueprints.Graph
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import models.Answer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,13 +14,20 @@ class Router : Indexable {
         private val logger = LoggerFactory.getLogger(Router::class.java) as Logger
     }
 
+    private val id: String
     private var isResetToStart = false;
     private var currentPoint : IDialogItem? = null;
+
     public var startPoint : IDialogItem
-    get;
-    private val graph: Graph
-    private val id: String
-    private val itemsMap =  HashMap<String , IDialogItem>();
+    get() = startPoint.clone();
+
+    public val graph: Graph
+    get
+
+    private val itemsMap = HashMap<String , IDialogItem>()
+
+    public fun getItemsMap () : HashMap<String , IDialogItem> { return this.itemsMap.clone() as HashMap<String , IDialogItem> }
+
 
     constructor(id: String, graph: Graph, items : Array<IDialogItem> , startPointId: String){
         this.graph = graph;
@@ -68,5 +76,18 @@ class Router : Indexable {
 
     override fun getId(): String {
         return id;
+    }
+
+    private fun isAllVerticesFulled(){
+        val list = ArrayList<IDialogItem>()
+        graph.vertices.forEach {
+            if(itemsMap[it.getProperty(Indexable.ID_Property)] == null) {
+                list.add(it.getProperty(Indexable.ID_Property))
+            }
+        }
+        if(list.isNotEmpty()){
+            throw IllegalAccessException("Vertexes doest have items : ${list.toTypedArray().contentToString()}")
+        }
+        return;
     }
 }

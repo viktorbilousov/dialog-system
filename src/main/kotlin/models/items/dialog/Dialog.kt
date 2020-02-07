@@ -5,6 +5,7 @@ import models.items.IDialogItem
 import models.items.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.streams.toList
 
 class Dialog : IDialogItem {
 
@@ -13,10 +14,18 @@ class Dialog : IDialogItem {
     }
     private val id: String
     private val router: Router
+    private val answers = mutableListOf<Answer>();
 
     constructor(id: String, router: Router){
         this.id = id;
         this.router = router;
+        router.itemsMap.values.forEach{
+            it.getAnswers().forEach {
+                    asw -> if( asw.type == AnswerType.EXIT) {
+                        answers.add(asw)
+                    }
+            }
+        }
     }
 
     override fun getId(): String {
@@ -28,16 +37,14 @@ class Dialog : IDialogItem {
         var currentItem = router.startPoint;
         var answer = inputAnswer;
         while (true) {
-            logger.info("[$id] Run item: ${currentItem.getId()} ")
+            logger.info("[$id] run item: ${currentItem.getId()} ")
             answer =  currentItem.run(answer)
-            logger.info("[$id] answer is ${answer.getId()}, Type: ${answer.type}")
-            if(answer.type == AnswerType.EXIT){
-                logger.info("return ${answer.getId()}")
-                logger.info("[$id] << body DIALOG: $id")
+            logger.info("[$id] answer is $answer")
+            if(answer.type == AnswerType.EXIT || answer.type == AnswerType.ENTER){
+                logger.info("return ${answer}")
+                logger.info("[$id] << body DIALOG")
                 answer.type=AnswerType.SIMPLE;
                 return answer;
-            }else if (answer.type == AnswerType.ENTER) {
-                currentItem = router.get(answer) // todo ?
             }else {
                 currentItem = router.get(answer)
             }
@@ -45,12 +52,18 @@ class Dialog : IDialogItem {
     }
     public fun addItem(item: IDialogItem){
         router.addItem(item);
+        item.getAnswers().forEach { if(it.type == AnswerType.EXIT) answers.add(it) }
     }
 
+    //todo delete?
     override fun clone(): IDialogItem {
         return Dialog(
             id,
             router
         );
+    }
+
+    override fun getAnswers(): Array<Answer> {
+        return answers.toTypedArray();
     }
 }

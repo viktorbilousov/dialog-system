@@ -45,4 +45,8 @@ class SimplePhrase(private val id: String) : IPhrase<SinglePhraseText> {
             )
         )
     }
+
+    override fun getAnswers(): Array<Answer> {
+        return text.getAnswers();
+    }
 }
