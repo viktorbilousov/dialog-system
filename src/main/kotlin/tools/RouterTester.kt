@@ -102,10 +102,10 @@ class RouterTester {
             return false;
         }
 
-        private fun bfs(startPoiuntId: String): Array<String>{
+        private fun bfs(startPointId: String): Array<String>{
             val queue = mutableListOf<String>();
             val passedVertexes = mutableSetOf<String>()
-            var currentVertex = graph.getVertex(startPoiuntId).id as String;
+            var currentVertex = graph.getVertex(startPointId).id as String;
             passedVertexes.add(currentVertex)
             queue.add(currentVertex);
             while (queue.isNotEmpty()){
