@@ -1,12 +1,13 @@
 package models.items.dialog
 import models.Answer;
 import models.AnswerType
-import models.items.ADialogItem
+import models.items.DialogItem
 import models.items.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tools.RouterTester
 
-class Dialog : ADialogItem {
+class Dialog : DialogItem {
 
     companion object{
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
@@ -22,14 +23,17 @@ class Dialog : ADialogItem {
     constructor(id: String, router: Router){
         this.id = id;
         this.router = router;
-        router.items.values.forEach{
-            it.answers.forEach {
-                    asw -> if( asw.type == AnswerType.EXIT) {
-                        this.answersList.add(asw)
-                    }
+        RouterTester.test(router)
+            .isAllVertexHasItems()
+            .isItemsLinkedCorrectly()
+            .checkStartPoint();
+        router.items!!.values.forEach {
+            it.answers.forEach { asw ->
+                if (asw.type == AnswerType.EXIT) {
+                    this.answersList.add(asw)
+                }
             }
         }
-
     }
 
     override fun body(inputAnswer: Answer): Answer {
@@ -50,17 +54,9 @@ class Dialog : ADialogItem {
             }
         }
     }
-    public fun addItem(item: ADialogItem){
+    public fun addItem(item: DialogItem){
         router.addItem(item);
-        item.answers.forEach { if(it.type == AnswerType.EXIT) this.answersList.add(it) }
-    }
-
-    //todo delete?
-    override fun clone(): ADialogItem {
-        return Dialog(
-            id,
-            router
-        );
+        item.answers.forEach { if(it.type != AnswerType.SIMPLE) this.answersList.add(it) }
     }
 
 }

@@ -1,7 +1,6 @@
 package models.items.phrase
 
 import models.Answer
-import models.items.ADialogItem
 import tools.PhrasePrinter
 import java.util.*
 import kotlin.math.abs
@@ -23,12 +22,5 @@ class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> )
         return res;
     }
 
-    override fun clone(): ADialogItem {
-        return RandomPhrase(
-            id,
-            phrases.clone(),
-            this.answers.clone()
-        )
-    }
 
 }

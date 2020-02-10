@@ -1,7 +1,6 @@
 package models.items.phrase
 
 import models.Answer
-import models.items.ADialogItem
 import tools.PhrasePrinter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,11 +23,4 @@ class SimplePhrase : Phrase {
         return res;
     }
 
-    override fun clone(): ADialogItem {
-        return SimplePhrase(
-            id,
-            phrases[0],
-            this.answers.clone()
-        )
-    }
 }

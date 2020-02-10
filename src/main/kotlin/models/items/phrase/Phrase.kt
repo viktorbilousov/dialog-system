@@ -1,12 +1,12 @@
 package models.items.phrase
 
 import models.Answer
-import models.items.ADialogItem
+import models.items.DialogItem
 import models.items.text.PhraseText
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-abstract class Phrase : ADialogItem {
+abstract class Phrase : DialogItem {
     companion object{
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
@@ -14,8 +14,7 @@ abstract class Phrase : ADialogItem {
     public var texts: PhraseText
     private set
 
-    final override var id: String
-    private set;
+    final override val id: String
 
     private val answersList = arrayListOf<Answer>();
 

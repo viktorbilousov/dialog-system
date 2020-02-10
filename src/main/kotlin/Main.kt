@@ -5,11 +5,10 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter
 import models.Answer
 import models.AnswerType
-import models.items.ADialogItem
+import models.items.DialogItem
 import models.items.Router
 import models.items.dialog.Dialog
 import models.items.phrase.SimplePhrase
-import models.items.text.PhraseText
 import java.io.FileOutputStream
 import java.util.HashMap
 
@@ -69,7 +68,7 @@ class Main {
             writer.outputGraph(out)
 
 
-            val itemsList = ArrayList<ADialogItem>();
+            val itemsList = ArrayList<DialogItem>();
             val phrase1 = SimplePhrase(
                 "phrase.1",
                 "im the first phrase",
@@ -143,9 +142,12 @@ class Main {
             itemsList.add(phrase4_1);
             itemsList.add(phrase4_2);
 
-            val routerMain = Router("router", mainGraph, itemsList.toTypedArray(), "phrase.1");
-            val router_3 = Router("router.3", mainGraph, itemsList.toTypedArray(), "phrase.3.1");
-            val router_4 = Router("router.4", mainGraph, itemsList.toTypedArray(), "phrase.4.1");
+            val itemsMap = itemsList.associateBy ( {it.id}, {it} ) as HashMap
+
+
+            val routerMain = Router("router", mainGraph, itemsMap, "phrase.1");
+            val router_3 = Router("router.3", mainGraph, itemsMap, "phrase.3.1");
+            val router_4 = Router("router.4", mainGraph, itemsMap, "phrase.4.1");
 
             val dialog_3 = Dialog("dialog.3", router_3);
             val dialog_4 = Dialog("dialog.4", router_4);

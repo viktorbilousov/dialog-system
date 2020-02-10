@@ -3,7 +3,7 @@ import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import models.Answer
 import models.AnswerType
-import models.items.ADialogItem
+import models.items.DialogItem
 import models.items.Router
 import models.items.phrase.EmptyPhrase
 import models.items.phrase.SimplePhrase
@@ -18,8 +18,8 @@ class Test_RouterTester {
     @Test
     fun isGraphRelated_good(){
         val graph: Graph = createRelatedTestGraph();
-        val items = arrayListOf<ADialogItem>( EmptyPhrase("id"))
-        val router = Router("id", graph, items.toTypedArray())
+        val items = hashMapOf<String, DialogItem>( Pair("id",EmptyPhrase("id") as DialogItem))
+        val router = Router("id", graph, items)
         try{
             RouterTester.test(router).isGraphRelated()
         }catch (e: IllegalAccessException){
@@ -31,8 +31,8 @@ class Test_RouterTester {
     @Test
      fun isGraphRelated_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = arrayListOf<ADialogItem>( SimplePhrase("id", "", arrayOf(Answer("", ""))))
-        val router = Router("id", graph, items.toTypedArray())
+        val items = hashMapOf<String, DialogItem>( Pair("id",EmptyPhrase("id") as DialogItem))
+        val router = Router("id", graph, items)
         assertThrows<IllegalAccessException> {  RouterTester.test(router).isGraphRelated()}
 
     }
@@ -40,7 +40,7 @@ class Test_RouterTester {
     @Test
      fun isAllItemsHasVertexes_good(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(5).toTypedArray();
+        val items = createMapWithSimplePhrase(5);
         val router = Router("id", graph, items);
         try{
             RouterTester.test(router).isAllItemsHasVertex()
@@ -53,7 +53,7 @@ class Test_RouterTester {
     @Test
     fun isAllItemsHasVertexes_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(20).toTypedArray();
+        val items = createMapWithSimplePhrase(20)
         val router = Router("id", graph, items);
 
         assertThrows<IllegalAccessException> { RouterTester.test(router).isAllItemsHasVertex()}
@@ -63,7 +63,7 @@ class Test_RouterTester {
     @Test
      fun isAllVertexHasItems_good(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(20).toTypedArray();
+        val items = createMapWithSimplePhrase(20)
         val router = Router("id", graph, items);
         try{
             RouterTester.test(router).isAllVertexHasItems()
@@ -76,7 +76,7 @@ class Test_RouterTester {
     @Test
      fun isAllVertexHasItems_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(10).toTypedArray();
+        val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
     }
@@ -84,7 +84,7 @@ class Test_RouterTester {
     @Test
     fun emptyVertexList(){
         val graph: Graph = TinkerGraph()
-        val items = createListWithSimplePhrase(10).toTypedArray();
+        val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
     }
@@ -92,7 +92,7 @@ class Test_RouterTester {
     @Test
      fun emptyItemsList(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = emptyArray<ADialogItem>()
+        val items = hashMapOf<String, DialogItem>()
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
     }
@@ -100,7 +100,7 @@ class Test_RouterTester {
     @Test
     fun startPoint_good(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(10).toTypedArray();
+        val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         router.startPointId = "1";
         try{
@@ -114,7 +114,7 @@ class Test_RouterTester {
     @Test
     fun startPoint_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(10).toTypedArray();
+        val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         router.startPointId = "112445";
         assertThrows<IllegalAccessException> {RouterTester.test(router).checkStartPoint()}
@@ -123,7 +123,7 @@ class Test_RouterTester {
     @Test
    fun startPointNull(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(10).toTypedArray();
+        val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {RouterTester.test(router).checkStartPoint()}
     }
@@ -131,7 +131,7 @@ class Test_RouterTester {
     @Test
      fun startPointSetNull(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createListWithSimplePhrase(10).toTypedArray();
+        val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
 
         assertThrows<IllegalArgumentException> {
@@ -143,7 +143,7 @@ class Test_RouterTester {
     @Test
      fun isItemsLinkedRight_good(){
         val graph: Graph = createRelatedTestGraph();
-        val items = createItemsListToRelatedGraph().toTypedArray();
+        val items = createItemsListToRelatedGraph();
         val router = Router("id", graph, items);
         try{
             RouterTester.test(router).isItemsLinkedCorrectly()
@@ -157,7 +157,7 @@ class Test_RouterTester {
     @Test
     fun isItemsLinkedRight_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = createItemsListToRelatedGraph().toTypedArray();
+        val items = createItemsListToRelatedGraph()
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {  RouterTester.test(router).isItemsLinkedCorrectly()}
     }
@@ -165,7 +165,7 @@ class Test_RouterTester {
     @Test
     fun isAllTypeCorrect_good(){
         val graph: Graph = createRelatedTestGraph();
-        val items = createItemsListToRelatedGraph().toTypedArray();
+        val items = createItemsListToRelatedGraph()
         val router = Router("id", graph, items);
        try{
            RouterTester.test(router).checkTypesOfPhases()
@@ -178,24 +178,24 @@ class Test_RouterTester {
 
     @Test
     fun isAllTypeCorrect_bad(){
-        val graph: Graph = createRelatedTestGraph();
-        val items = createItemsListToRelatedGraph().toTypedArray();
-        items[6].answers[0].type = AnswerType.EXIT;
-        val router = Router("id", graph, items);
+        val graph: Graph = createRelatedTestGraph()
+        val items = createItemsListToRelatedGraph()
+        items["6"]!!.answers[0].type = AnswerType.EXIT
+        val router = Router("id", graph, items)
         assertThrows<IllegalAccessException> {  RouterTester.test(router).checkTypesOfPhases()}
     }
 
 
-    private fun createListWithSimplePhrase(maxId: Int): List<ADialogItem>{
-        val list = arrayListOf<ADialogItem>();
+    private fun createMapWithSimplePhrase(maxId: Int): HashMap<String,DialogItem>{
+        val list = hashMapOf<String, DialogItem>();
         for( i in 1..maxId){
-            list.add(EmptyPhrase(i.toString()))
+            list[i.toString()] = EmptyPhrase(i.toString()) as DialogItem
         }
         return list;
     }
 
 
-    private fun createItemsListToRelatedGraph(): List<ADialogItem>{
+    private fun createItemsListToRelatedGraph(): HashMap<String,DialogItem>{
         val a = hashMapOf<Int, PhraseText>();
 
         a[1] = PhraseText("1", "text 1 ", arrayOf(Answer("2", "answ 1")))
@@ -212,7 +212,11 @@ class Test_RouterTester {
 
 
 
-        return a.values.stream().map { SimplePhrase(it.id, it.text[0], it.answers) }.toList()
+        return a.values.stream()
+            .map{ SimplePhrase(it.id, it.text[0], it.answers)}.toList().associateBy(
+                keySelector = { it.id },
+                valueTransform = { it as DialogItem }
+            ) as HashMap<String, DialogItem>
 
         /*
 

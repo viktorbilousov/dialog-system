@@ -6,7 +6,7 @@ import models.items.phrase.Phrase
 import java.io.FileReader
 import java.io.FileWriter
 
-class FPhraseText {
+class PhraseTextFabric {
     companion object {
         public fun write(text: Array<PhraseText>, pathToFile: String) {
             val result = Klaxon().toJsonString(text);
