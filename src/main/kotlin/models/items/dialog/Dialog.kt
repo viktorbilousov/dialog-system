@@ -19,7 +19,7 @@ class Dialog : IDialogItem {
     constructor(id: String, router: Router){
         this.id = id;
         this.router = router;
-        router.itemsMap.values.forEach{
+        router.items.values.forEach{
             it.getAnswers().forEach {
                     asw -> if( asw.type == AnswerType.EXIT) {
                         answers.add(asw)
