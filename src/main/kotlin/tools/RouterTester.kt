@@ -3,6 +3,7 @@ package tools
 import com.tinkerpop.blueprints.Direction
 import models.Answer
 import models.AnswerType
+import models.items.DialogItem
 import models.items.Router
 import java.lang.IllegalArgumentException
 
@@ -17,8 +18,10 @@ class RouterTester {
 
     class RouterTestClass(private val router : Router){
         private val graph  = router.graph
-        private val items  = router.items
+        private val items : HashMap<String, DialogItem>
         init {
+            if(router.items == null ) throw IllegalAccessException("items list is null!")
+            this.items = router.items!!
             if(items.isEmpty()) throw IllegalAccessException("items list is empty!")
             if(!graph.vertices.iterator().hasNext()) throw IllegalAccessException("vertices in the graph is empty!")
             if(!graph.edges.iterator().hasNext()) throw IllegalAccessException("edges in the graph is empty!")
@@ -118,9 +121,9 @@ class RouterTester {
             return this
         }
 
-        private fun isConnected(sourceId: String, desctId:String) : Boolean{
+        private fun isConnected(sourceId: String, destId:String) : Boolean{
             graph.getVertex(sourceId).getEdges(Direction.OUT).forEach{
-                if(it.getVertex(Direction.IN).id as String == desctId) return true;
+                if(it.getVertex(Direction.IN).id as String == destId) return true;
             }
             return false;
         }
