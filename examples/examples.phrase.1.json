@@ -1,0 +1,18 @@
+{
+  "answers": [
+    {
+      "answ_id": "answ.1",
+      "Text": "to the 1",
+      "type": "SIMPLE"
+    },
+    {
+      "answ_id": "answ.2",
+      "Text": "to the 2",
+      "type": "EXIT"
+    }
+  ],
+  "phr_id": "phrase.1",
+  "texts": [
+    "single phrase text"
+  ]
+}

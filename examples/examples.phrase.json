@@ -1,0 +1,38 @@
+[
+  {
+    "answers": [
+      {
+        "answ_id": "answ.1",
+        "Text": "to the 1",
+        "type": "SIMPLE"
+      },
+      {
+        "answ_id": "answ.2",
+        "Text": "to the 2",
+        "type": "EXIT"
+      }
+    ],
+    "phr_id": "phrase.1",
+    "texts": [
+      "single phrase text"
+    ]
+  },
+  {
+    "answers": [
+      {
+        "answ_id": "answ.12",
+        "Text": "to the 13",
+        "type": "SIMPLE"
+      },
+      {
+        "answ_id": "answ.23",
+        "Text": "to the 24",
+        "type": "EXIT"
+      }
+    ],
+    "phr_id": "phrase.2",
+    "texts": [
+      "single phrase text 2"
+    ]
+  }
+]

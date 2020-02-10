@@ -1,8 +1,7 @@
 package models
 
+import com.beust.klaxon.Json
+
 interface Indexable {
-    fun getId(): String
-    companion object{
-        public const val ID_Property = "v_ID";
-    }
+    val id : String
 }

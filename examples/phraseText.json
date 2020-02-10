@@ -1,0 +1,19 @@
+{
+  "answers": [
+    {
+      "answ_id": "answ.12",
+      "Text": "to the 13",
+      "type": "SIMPLE"
+    },
+    {
+      "answ_id": "answ.23",
+      "Text": "to the 24",
+      "type": "EXIT"
+    }
+  ],
+  "class": "models.items.phrase.RandomPhrase",
+  "id": "textid",
+  "texts": [
+    "text"
+  ]
+}

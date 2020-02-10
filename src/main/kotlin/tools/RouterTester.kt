@@ -106,9 +106,9 @@ class RouterTester {
         public fun isItemsLinkedCorrectly()  : RouterTestClass{
             val errList = mutableMapOf<String, String>()
             for (item in items.values) {
-               item.getAnswers().forEach {
-                   if(!isConnected(item.getId(), it.getId()) && it.type == AnswerType.SIMPLE){
-                       errList[item.getId()] = it.getId();
+               item.answers.forEach {
+                   if(!isConnected(item.id, it.id) && it.type == AnswerType.SIMPLE){
+                       errList[item.id] = it.id;
                    }
                }
             }
@@ -133,7 +133,7 @@ class RouterTester {
             graph.vertices.forEach{
                 if(items[it.id] != null) {
                     if (it.getVertices(Direction.OUT).count() == 0) {
-                        items[it.id]?.getAnswers()?.forEach { ans ->
+                        items[it.id]?.answers?.forEach { ans ->
                             if (ans.type != AnswerType.EXIT) {
                                 errList_exit.add(ans);
                             }
@@ -145,7 +145,7 @@ class RouterTester {
                             }
                         }*/
                     } else{
-                        items[it.id]?.getAnswers()?.forEach { ans ->
+                        items[it.id]?.answers?.forEach { ans ->
                             if (ans.type != AnswerType.SIMPLE) {
                                 errList_simple.add(ans);
                             }

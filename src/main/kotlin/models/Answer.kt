@@ -1,28 +1,30 @@
 package models
 
-class Answer : Indexable {
+import com.beust.klaxon.Json
 
-    private var id : String;
-    public var type = AnswerType.SIMPLE
-        get set;
-    public var text: String
-        get set;
+ class Answer : Indexable {
 
-    constructor(id: String, text: String){
-        this.id = id;
-        this.text = text;
-    }
+     @Json(name = "answ_id")
+     override val id: String
 
-    constructor(id: String, text: String, answerType: AnswerType) : this(id, text) {
-        this.type = answerType;
-    }
+     @Json(name = "Text")
+     public var text: String
+
+     @Json(name = "type")
+     public var type = AnswerType.SIMPLE
 
 
-    override fun getId(): String {
-        return id;
-    }
+     constructor(id: String, text: String) {
+         this.id = id;
+         this.text = text;
+         this.type = AnswerType.SIMPLE;
+     }
 
-    override fun toString(): String {
-        return "{id=$id, type=$type}"
-    }
-}
+     constructor(id: String, text: String, answerType: AnswerType) : this(id, text) {
+         this.type = answerType;
+     }
+
+     override fun toString(): String {
+         return "{id:$id, text:'$text', type=$type}"
+     }
+ }

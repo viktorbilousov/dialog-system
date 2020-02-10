@@ -3,10 +3,11 @@ import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import models.Answer
 import models.AnswerType
-import models.items.IDialogItem
+import models.items.ADialogItem
 import models.items.Router
+import models.items.phrase.EmptyPhrase
 import models.items.phrase.SimplePhrase
-import models.items.text.SinglePhraseText
+import models.items.text.PhraseText
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import tools.RouterTester
@@ -17,7 +18,7 @@ class Test_RouterTester {
     @Test
     fun isGraphRelated_good(){
         val graph: Graph = createRelatedTestGraph();
-        val items = arrayListOf<IDialogItem>( SimplePhrase("id"))
+        val items = arrayListOf<ADialogItem>( EmptyPhrase("id"))
         val router = Router("id", graph, items.toTypedArray())
         try{
             RouterTester.test(router).isGraphRelated()
@@ -30,7 +31,7 @@ class Test_RouterTester {
     @Test
      fun isGraphRelated_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = arrayListOf<IDialogItem>( SimplePhrase("id"))
+        val items = arrayListOf<ADialogItem>( SimplePhrase("id", "", arrayOf(Answer("", ""))))
         val router = Router("id", graph, items.toTypedArray())
         assertThrows<IllegalAccessException> {  RouterTester.test(router).isGraphRelated()}
 
@@ -91,7 +92,7 @@ class Test_RouterTester {
     @Test
      fun emptyItemsList(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = emptyArray<IDialogItem>()
+        val items = emptyArray<ADialogItem>()
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
     }
@@ -179,40 +180,39 @@ class Test_RouterTester {
     fun isAllTypeCorrect_bad(){
         val graph: Graph = createRelatedTestGraph();
         val items = createItemsListToRelatedGraph().toTypedArray();
-        items[6].getAnswers()[0].type = AnswerType.EXIT;
+        items[6].answers[0].type = AnswerType.EXIT;
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> {  RouterTester.test(router).checkTypesOfPhases()}
     }
 
 
-    private fun createListWithSimplePhrase(maxId: Int): List<IDialogItem>{
-        val list = arrayListOf<IDialogItem>();
+    private fun createListWithSimplePhrase(maxId: Int): List<ADialogItem>{
+        val list = arrayListOf<ADialogItem>();
         for( i in 1..maxId){
-            list.add(SimplePhrase(i.toString()))
+            list.add(EmptyPhrase(i.toString()))
         }
         return list;
     }
 
 
-    private fun createItemsListToRelatedGraph(): List<IDialogItem>{
-        val v = hashMapOf<Int, IDialogItem>();
-        val a = hashMapOf<Int, SinglePhraseText>();
+    private fun createItemsListToRelatedGraph(): List<ADialogItem>{
+        val a = hashMapOf<Int, PhraseText>();
 
-        a[1] = SinglePhraseText("1", "text 1 ", arrayOf(Answer("2", "answ 1")))
-        a[2] = SinglePhraseText("2", "text 2 ", arrayOf(Answer("3", "answ 2.1"), Answer("4","answ 2.2" )))
-        a[3] = SinglePhraseText("3", "text 3 ", arrayOf(Answer("5", "answ 3.1"), Answer("6", "answ 6.1")))
-        a[4] = SinglePhraseText("4", "text 4 ", arrayOf(Answer("6", "answ 4.1"), Answer("7", "answ 4.2") ))
-        a[5] = SinglePhraseText("5", "text 5 ", arrayOf(Answer("9", "answ 5")))
-        a[6] = SinglePhraseText("6", "text 6 ", arrayOf(Answer("9", "answ 6")))
-        a[7] = SinglePhraseText("7", "text 7 ", arrayOf(Answer("8", "answ 1")))
-        a[8] = SinglePhraseText("8", "text 8 ", arrayOf(Answer("end 8", "answ 8", AnswerType.EXIT)))
-        a[9] = SinglePhraseText("9", "text 9 ", arrayOf(Answer("10", "answ 9")))
-        a[10] = SinglePhraseText("10", "text 10 ", arrayOf(Answer("edn 10", "answ 1", AnswerType.EXIT)))
-        a[11] = SinglePhraseText("11", "text 11 ", arrayOf(Answer("2", "answ 11")))
+        a[1] = PhraseText("1", "text 1 ", arrayOf(Answer("2", "answ 1")))
+        a[2] = PhraseText("2", "text 2 ", arrayOf(Answer("3", "answ 2.1"), Answer("4","answ 2.2" )))
+        a[3] = PhraseText("3", "text 3 ", arrayOf(Answer("5", "answ 3.1"), Answer("6", "answ 6.1")))
+        a[4] = PhraseText("4", "text 4 ", arrayOf(Answer("6", "answ 4.1"), Answer("7", "answ 4.2") ))
+        a[5] = PhraseText("5", "text 5 ", arrayOf(Answer("9", "answ 5")))
+        a[6] = PhraseText("6", "text 6 ", arrayOf(Answer("9", "answ 6")))
+        a[7] = PhraseText("7", "text 7 ", arrayOf(Answer("8", "answ 1")))
+        a[8] = PhraseText("8", "text 8 ", arrayOf(Answer("end 8", "answ 8", AnswerType.EXIT)))
+        a[9] = PhraseText("9", "text 9 ", arrayOf(Answer("10", "answ 9")))
+        a[10] = PhraseText("10", "text 10 ", arrayOf(Answer("edn 10", "answ 1", AnswerType.EXIT)))
+        a[11] = PhraseText("11", "text 11 ", arrayOf(Answer("2", "answ 11")))
 
-        v[1] = SimplePhrase(1.toString());
 
-        return a.values.stream().map { SimplePhrase(it.getId(), it) }.toList()
+
+        return a.values.stream().map { SimplePhrase(it.id, it.text[0], it.answers) }.toList()
 
         /*
 

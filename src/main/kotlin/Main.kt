@@ -5,27 +5,26 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter
 import models.Answer
 import models.AnswerType
-import models.items.IDialogItem
+import models.items.ADialogItem
 import models.items.Router
 import models.items.dialog.Dialog
 import models.items.phrase.SimplePhrase
-import models.items.text.SinglePhraseText
+import models.items.text.PhraseText
 import java.io.FileOutputStream
 import java.util.HashMap
 
 
-
-
-
 class Main {
-    companion object{
+    companion object {
         @JvmStatic
         public fun main(args: Array<String>) {
+
 
             val mainGraph: Graph = TinkerGraph();
             val graph_3: Graph = TinkerGraph();
             val graph_4: Graph = TinkerGraph();
             val out = FileOutputStream("examples/testFile.xml");
+
 
             // val graph = TinkerGraph()
             val vertexes = HashMap<String, Vertex>();
@@ -70,70 +69,68 @@ class Main {
             writer.outputGraph(out)
 
 
-
-
-
-            val itemsList = ArrayList<IDialogItem>();
-            val phrase1  = SimplePhrase("phrase.1", SinglePhraseText(
-                "text.phrase.1",
+            val itemsList = ArrayList<ADialogItem>();
+            val phrase1 = SimplePhrase(
+                "phrase.1",
                 "im the first phrase",
-                arrayOf(Answer("phrase.2" ,"go to 2") )
-                )
+                arrayOf(Answer("phrase.2", "go to 2"))
             )
 
-            val phrase2  = SimplePhrase("phrase.2", SinglePhraseText(
-                "text.phrase.2",
+
+            val phrase2 = SimplePhrase(
+                "phrase.2",
                 "im the second phrase",
-                arrayOf(Answer("phrase.3","go to 3" ), Answer("phrase.4" ,"go to 4"))
-            )
+                arrayOf(Answer("phrase.3", "go to 3"), Answer("phrase.4", "go to 4"))
             )
 
-            val phrase3  = SimplePhrase("phrase.3", SinglePhraseText(
-                "text.phrase.3",
+
+            val phrase3 = SimplePhrase(
+                "phrase.3",
                 "im the third phrase",
-                arrayOf(Answer("phrase.5","go to 5" ), Answer("dialog.3","go to dialog 3" , AnswerType.ENTER))
-            )
+                arrayOf(Answer("phrase.5", "go to 5"), Answer("dialog.3", "go to dialog 3", AnswerType.ENTER))
             )
 
-            val phrase4  = SimplePhrase("phrase.4", SinglePhraseText(
-                "text.phrase.4",
+
+            val phrase4 = SimplePhrase(
+                "phrase.4",
                 "im the fourth phrase",
-                arrayOf(Answer("phrase.5","go to 5" ), Answer("dialog.4","go to dialog 4", AnswerType.ENTER ))
-            )
+                arrayOf(Answer("phrase.5", "go to 5"), Answer("dialog.4", "go to dialog 4", AnswerType.ENTER))
             )
 
-            val phrase5  = SimplePhrase("phrase.5", SinglePhraseText(
-                "text.phrase.5",
+
+            val phrase5 = SimplePhrase(
+                "phrase.5",
                 "im the fifth phrase",
-                arrayOf(Answer("exit" ,"exit", AnswerType.EXIT))
-            )
+                arrayOf(Answer("exit", "exit", AnswerType.EXIT))
             )
 
-            val phrase3_1  = SimplePhrase("phrase.3.1", SinglePhraseText(
-                "text.phrase.3.1",
+
+            val phrase3_1 = SimplePhrase(
+                "phrase.3.1",
                 "im the 3.1 phrase",
-                arrayOf(Answer("phrase.3.2" ,"go to 3.2"))
-            )
+                arrayOf(Answer("phrase.3.2", "go to 3.2"))
             )
 
-            val phrase3_2  = SimplePhrase("phrase.3.2", SinglePhraseText(
-                "text.phrase.3.2",
+
+            val phrase3_2 = SimplePhrase(
+                "phrase.3.2",
                 "im the 3.2 phrase",
-                arrayOf(Answer("phrase.3" ,"exit", AnswerType.EXIT))
+                arrayOf(Answer("phrase.3", "exit", AnswerType.EXIT))
             )
-            )
-            val phrase4_1  = SimplePhrase("phrase.4.1", SinglePhraseText(
-                "text.phrase.4.1",
+
+
+            val phrase4_1 = SimplePhrase(
+                "phrase.4.1",
                 "im the 4.1 phrase",
-                arrayOf(Answer("phrase4.2" ,"go to 4.2"))
+                arrayOf(Answer("phrase4.2", "go to 4.2"))
             )
-            )
-            val phrase4_2  = SimplePhrase("phrase.4.2", SinglePhraseText(
-                "text.phrase.4.2",
+
+            val phrase4_2 = SimplePhrase(
+                "phrase.4.2",
                 "im the 4.2 phrase",
-                arrayOf(Answer("phrase.1" ,"exit", AnswerType.EXIT))
+                arrayOf(Answer("phrase.1", "exit", AnswerType.EXIT))
             )
-            )
+
 
 
             itemsList.add(phrase1);
@@ -146,9 +143,9 @@ class Main {
             itemsList.add(phrase4_1);
             itemsList.add(phrase4_2);
 
-            val routerMain = Router("router", mainGraph, itemsList.toTypedArray(),"phrase.1");
-            val router_3 = Router("router.3", mainGraph, itemsList.toTypedArray(),"phrase.3.1");
-            val router_4 = Router("router.4", mainGraph, itemsList.toTypedArray(),"phrase.4.1");
+            val routerMain = Router("router", mainGraph, itemsList.toTypedArray(), "phrase.1");
+            val router_3 = Router("router.3", mainGraph, itemsList.toTypedArray(), "phrase.3.1");
+            val router_4 = Router("router.4", mainGraph, itemsList.toTypedArray(), "phrase.4.1");
 
             val dialog_3 = Dialog("dialog.3", router_3);
             val dialog_4 = Dialog("dialog.4", router_4);
@@ -157,7 +154,7 @@ class Main {
             dialog.addItem(dialog_3)
             dialog.addItem(dialog_4)
 
-            dialog.run(Answer("start","Start", AnswerType.ENTER));
+            dialog.run(Answer("start", "Start", AnswerType.ENTER));
 
 
 
