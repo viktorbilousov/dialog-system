@@ -7,7 +7,7 @@ import com.beust.klaxon.Json
      @Json(name = "answ_id")
      override val id: String
 
-     @Json(name = "Text")
+     @Json(name = "text")
      public var text: String
 
      @Json(name = "type")

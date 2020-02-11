@@ -16,7 +16,7 @@ class PhraseTextStream {
 
         public fun write(phrase: PhraseText, pathToFile: String) {
             val result = Klaxon().toJsonString(phrase);
-            println(result)
+          //  println(result)
             val fw = FileWriter(pathToFile)
             fw.use {
                 it.write(result)
