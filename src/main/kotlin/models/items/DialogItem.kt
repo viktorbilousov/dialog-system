@@ -15,18 +15,25 @@ abstract class DialogItem : Indexable {
     get;
 
 
-    public var before: (inputAnswer: Answer) -> Unit = {
+    private var before: (inputAnswer: Answer) -> Unit = {
         logger.info("[${id}] >> before (empty)")
         logger.info("[${id}] << before (empty)")
     }
 
-    public var after: (outputAnswer: Answer) -> Unit = {
+    private var after: (outputAnswer: Answer) -> Unit = {
         logger.info("[${id}] >> after (empty)")
         logger.info("[${id}] << after (empty)")
     }
 
+    public fun setBeforeFun(lambda: (inputAnswer: Answer) -> Unit ){
+        this.before = lambda;
+    }
 
-   abstract fun body(inputAnswer: Answer) : Answer
+    public fun setAfterFun(lambda: (outputAnswer: Answer)-> Unit ){
+        this.after = lambda;
+    }
+
+    protected abstract fun body(inputAnswer: Answer) : Answer
 
     fun run(inputAnswer: Answer): Answer{
         logger.info("[${id}] >> run")

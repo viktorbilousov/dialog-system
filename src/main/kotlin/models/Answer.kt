@@ -13,6 +13,20 @@ import com.beust.klaxon.Json
      @Json(name = "type")
      public var type = AnswerType.SIMPLE
 
+     companion object{
+         public fun empty () : Answer{
+             return Answer("", "")
+         }
+         public fun enter() : Answer{
+             return Answer("enter", "", AnswerType.ENTER)
+         }
+         public fun enter(id: String) : Answer{
+             return Answer(id, "", AnswerType.ENTER)
+         }
+         public fun exit() : Answer{
+             return Answer("exit", "", AnswerType.EXIT)
+         }
+     }
 
      constructor(id: String, text: String) {
          this.id = id;

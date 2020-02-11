@@ -5,6 +5,7 @@ import models.items.DialogItem
 import models.router.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 
 class Dialog : DialogItem {
 
@@ -13,6 +14,7 @@ class Dialog : DialogItem {
     }
     private val router: Router
     override val id: String
+    private var currentItem : DialogItem;
 
     override val answers: Array<Answer>
         get() {
@@ -34,11 +36,11 @@ class Dialog : DialogItem {
     constructor(id: String, router: Router){
         this.id = id;
         this.router = router;
+        currentItem = router.startPoint;
     }
 
     override fun body(inputAnswer: Answer): Answer {
-        logger.info("[DIALOG] [$id] >> body DIALOG ")
-        var currentItem = router.startPoint;
+        logger.info("[DIALOG] [$id] >> body")
         var answer = inputAnswer;
         while (true) {
             logger.info("[$id] run item: ${currentItem.id} ")
@@ -50,7 +52,7 @@ class Dialog : DialogItem {
                 answer.type=AnswerType.SIMPLE;
                 return answer;
             }else {
-                currentItem = router.get(answer)
+                currentItem = router.getNext(answer)
             }
         }
     }
@@ -58,4 +60,15 @@ class Dialog : DialogItem {
         router.addItem(item);
     }
 
+    public fun startFrom(id: String, inputAnswer: Answer) : Answer? {
+        logger.info("[DIALOG] [$id] >> startFrom")
+        val item = router.goTo(id) ?: return null;
+        logger.info("[DIALOG] [$id] << startFrom")
+        currentItem = item;
+        return run(inputAnswer);
+    }
+
+    public fun containsItem(id: String) : Boolean{
+        return router.contains(id);
+    }
 }

@@ -18,6 +18,7 @@ class Router : Indexable {
 
     private var currentPoint: DialogItem? = null
 
+
     @Json(name = "id")
     override val id: String
 
@@ -31,7 +32,6 @@ class Router : Indexable {
         }
         field = value;
     }
-
 
     @Json(name = "startPointId")
     public var startPointId: String? = null
@@ -52,7 +52,7 @@ class Router : Indexable {
         }
 
     public val graph: Graph
-        get;
+        get
 
 
 
@@ -85,7 +85,7 @@ class Router : Indexable {
     }
 
 
-    public fun get(answer: Answer): DialogItem {
+    public fun getNext(answer: Answer): DialogItem {
         logger.info("[$id] << intput: $answer")
         val res = get(answer.id)
         if (currentPoint != null && !isConnected(res, currentPoint!!)) {
@@ -94,6 +94,23 @@ class Router : Indexable {
         currentPoint = res;
         logger.info("[$id] >> output item: ${res.id}")
         return res;
+    }
+
+    public fun goTo(id: String) : DialogItem?{
+        logger.info("[$id] << goTo: $id")
+        if(items == null){
+            throw IllegalAccessException("Items is null!")
+        }
+
+        var res : DialogItem? = null;
+        if(items!![id] != null && graph.getVertex(id)!= null) {
+            res = items!![id];
+            currentPoint = res
+        }
+        logger.info("[$id] >> output item: ${res?.id}")
+        return res;
+
+
     }
 
     private fun get(id: String): DialogItem {
@@ -118,6 +135,10 @@ class Router : Indexable {
         items!![item.id] = item;
     }
 
+    public fun contains(id: String): Boolean{
+        return this.graph.getEdge(id) != null  && items!![id] != null;
+    }
+
     // TODO : need to test
     private fun isConnected(source: DialogItem, dest: DialogItem): Boolean {
         for (edge in graph.edges) {
@@ -127,5 +148,6 @@ class Router : Indexable {
         }
         return false;
     }
+
 
 }
