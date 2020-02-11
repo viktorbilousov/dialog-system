@@ -5,31 +5,56 @@ import models.Answer
 import models.AnswerType
 import models.items.text.PhraseText
 import models.items.text.PhraseTextStream
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import java.io.FileReader
 
 class Test_PhraseTextStream {
 
-    @Test fun readManyFromFile(){}
-    @Test fun readOneFromFile(){}
-    @Test fun writeManyToFile(){
-        val pathToFile = "src\\test\\resources\\writeMultiplyPhraseText.json"
+    @Test
+    fun readManyFromFile() {
+
+        val pathToFile = "./src/test/resources/test_readMultiplyPhraseText.json"
+        val expectedInput = Klaxon().parseJsonArray(FileReader(pathToFile))
+        val actualInput = PhraseTextStream.readMany(pathToFile) as Array<PhraseText>
+
+        assertEquals(expectedInput.size, actualInput.size)
+
+        for (i in actualInput.indices) {
+            testPhraseTextWithJsonObject(actualInput[i], expectedInput[i] as JsonObject)
+        }
+    }
+
+    @Test
+    fun readOneFromFile() {
+
+        val pathToFile = "./src/test/resources/test_readSinglePhraseText.json"
+        val input = Klaxon().parseJsonObject(FileReader(pathToFile))
+        val actualPhraseText = PhraseTextStream.readOne(pathToFile) as PhraseText
+
+        testPhraseTextWithJsonObject(actualPhraseText, input)
+
+    }
+
+    @Test
+    fun writeManyToFile() {
+        val pathToFile = "./src/test/resources/writeMultiplyPhraseText.json"
         val expectedIdArray = arrayOf("test_id1", "test_id2", "test_id3")
         val expectedTextsArray = arrayOf(
-            createArrayOfString(15).copyOfRange(0,4),
-            createArrayOfString(15).copyOfRange(5,9),
-            createArrayOfString(15).copyOfRange(10,14)
+            createArrayOfString(15).copyOfRange(0, 4),
+            createArrayOfString(15).copyOfRange(5, 9),
+            createArrayOfString(15).copyOfRange(10, 14)
         )
         val expectedAnswersArray = arrayOf(
-            createArrayOfanswers(15).copyOfRange(0,4),
-            createArrayOfString(15).copyOfRange(5,9),
-            createArrayOfString(15).copyOfRange(10,14)
+            createArrayOfAnswers(15).copyOfRange(0, 4),
+            createArrayOfAnswers(15).copyOfRange(5, 9),
+            createArrayOfAnswers(15).copyOfRange(10, 14)
         )
 
 
-       val phraseTexts = arrayListOf<PhraseText>()
-        for(i in expectedIdArray.indices){
+        val phraseTexts = arrayListOf<PhraseText>()
+        for (i in expectedIdArray.indices) {
             phraseTexts.add(
                 PhraseText(
                     expectedIdArray[i],
@@ -40,34 +65,24 @@ class Test_PhraseTextStream {
         }
 
 
-        PhraseTextStream.write(phrase, pathToFile);
+        PhraseTextStream.write(phraseTexts.toTypedArray(), pathToFile);
 
-        val input = Klaxon().parseJsonObject(FileReader(pathToFile));
-        val actualID = input["id"] as String;
-        val actualAnswers = (input["answers"] as JsonArray<JsonObject>).toTypedArray()
-        val actualTexts = (input["texts"] as JsonArray<String>).toTypedArray()
-        val actualClass = input["class"] as String
+        val input = Klaxon().parseJsonArray(FileReader(pathToFile));
+        assertEquals(input.size, phraseTexts.size)
 
-        assertEquals(actualID, expectedId);
-        assertNotNull(actualClass);
-
-        assertEquals(actualAnswers.size, expectedAnswers.size )
-        assertEquals(actualTexts.size, expectedTexts.size )
-
-        for (i in actualTexts.indices){
-            assertEquals(actualTexts[i], expectedTexts[i]);
+        for (i in 0 until phraseTexts.size) {
+            testPhraseTextWithJsonObject(
+                expectedIdArray[i],
+                expectedTextsArray[i],
+                expectedAnswersArray[i],
+                input[i] as JsonObject)
         }
-
-        for (i in actualAnswers.indices){
-            assertEquals( actualAnswers[i]["answ_id"],  expectedAnswers[i].id );
-            assertEquals( actualAnswers[i]["text"],  expectedAnswers[i].text );
-            assertEquals( actualAnswers[i]["type"],  expectedAnswers[i].type.name );
-        }
-
     }
-    @Test fun writeOneToFile(){
 
-        val pathToFile = "src\\test\\resources\\writeSinglePhraseText.json"
+    @Test
+    fun writeOneToFile() {
+
+        val pathToFile = "./src/test/resources/writeSinglePhraseText.json"
         val expectedId = "test_id"
         val expectedTexts = arrayOf("text1", "text2", "text3");
         val expectedAnswers = arrayOf(
@@ -84,44 +99,25 @@ class Test_PhraseTextStream {
         PhraseTextStream.write(phrase, pathToFile);
 
         val input = Klaxon().parseJsonObject(FileReader(pathToFile));
-        val actualID = input["id"] as String;
-        val actualAnswers = (input["answers"] as JsonArray<JsonObject>).toTypedArray()
-        val actualTexts = (input["texts"] as JsonArray<String>).toTypedArray()
-        val actualClass = input["class"] as String
-
-        assertEquals(actualID, expectedId);
-        assertNotNull(actualClass);
-
-        assertEquals(actualAnswers.size, expectedAnswers.size )
-        assertEquals(actualTexts.size, expectedTexts.size )
-
-        for (i in actualTexts.indices){
-            assertEquals(actualTexts[i], expectedTexts[i]);
-        }
-
-        for (i in actualAnswers.indices){
-            assertEquals( actualAnswers[i]["answ_id"],  expectedAnswers[i].id );
-            assertEquals( actualAnswers[i]["text"],  expectedAnswers[i].text );
-            assertEquals( actualAnswers[i]["type"],  expectedAnswers[i].type.name );
-        }
+        testPhraseTextWithJsonObject(expectedId, expectedTexts, expectedAnswers, input)
     }
 
 
-    private fun createTestPhraseText(): PhraseText{
-       return createTestPhraseText(20,50);
+    private fun createTestPhraseText(): PhraseText {
+        return createTestPhraseText(20, 50);
     }
 
-    private fun createTestPhraseText(numTexts: Int, numAnswers : Int): PhraseText{
+    private fun createTestPhraseText(numTexts: Int, numAnswers: Int): PhraseText {
         return PhraseText(
             "test_phrase",
             createArrayOfString(numTexts),
-            createArrayOfanswers(numAnswers)
+            createArrayOfAnswers(numAnswers)
         )
     }
 
-    private fun createArrayOfanswers(size: Int) : Array<Answer>{
-        val list=  arrayListOf<Answer>()
-        for (i in 0 until size){
+    private fun createArrayOfAnswers(size: Int): Array<Answer> {
+        val list = arrayListOf<Answer>()
+        for (i in 0 until size) {
             list.add(
                 Answer("answer.$i", "ANSWER TEXT $i")
             )
@@ -129,11 +125,42 @@ class Test_PhraseTextStream {
         return list.toTypedArray()
     }
 
-    private fun createArrayOfString(size: Int):Array<String>{
-        val list=  arrayListOf<String>()
-        for(i in 0 until size){
+    private fun createArrayOfString(size: Int): Array<String> {
+        val list = arrayListOf<String>()
+        for (i in 0 until size) {
             list.add("text $i")
         }
         return list.toTypedArray();
+    }
+
+    private fun testPhraseTextWithJsonObject(phraseText: PhraseText, phraseTextJson: JsonObject) {
+        testPhraseTextWithJsonObject(phraseText.id, phraseText.text, phraseText.answers, phraseTextJson)
+    }
+
+    private fun testPhraseTextWithJsonObject(
+        phraseId: String,
+        phraseTexts: Array<String>,
+        phraseAnswers: Array<Answer>,
+        phraseTextJson: JsonObject
+    ) {
+
+        val jsonId = phraseTextJson["id"] as String;
+        val jsonAnswers = (phraseTextJson["answers"] as JsonArray<JsonObject>).toTypedArray()
+        val jsonTexts = (phraseTextJson["texts"] as JsonArray<String>).toTypedArray()
+
+        assertEquals(jsonId, phraseId);
+
+        assertEquals(phraseAnswers.size, jsonAnswers.size)
+        assertEquals(phraseTexts.size, jsonTexts.size)
+
+        for (i in phraseTexts.indices) {
+            assertEquals(phraseTexts[i], jsonTexts[i]);
+        }
+
+        for (i in phraseAnswers.indices) {
+            assertEquals(jsonAnswers[i]["answ_id"], phraseAnswers[i].id);
+            assertEquals(jsonAnswers[i]["text"], phraseAnswers[i].text);
+            assertEquals(jsonAnswers[i]["type"], phraseAnswers[i].type.name);
+        }
     }
 }

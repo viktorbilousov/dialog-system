@@ -29,9 +29,9 @@ class PhraseTextStream {
             }
         }
 
-        public fun readMany(pathToFile: String): List<PhraseText>? {
+        public fun readMany(pathToFile: String): Array<PhraseText>? {
             FileReader(pathToFile).use {
-                return Klaxon().parseArray(it.readText())
+                return (Klaxon().parseArray<PhraseText>(it.readText()) as ArrayList<PhraseText>).toTypedArray()
             }
         }
     }
