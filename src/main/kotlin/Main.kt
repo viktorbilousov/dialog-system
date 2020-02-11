@@ -6,7 +6,7 @@ import com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter
 import models.Answer
 import models.AnswerType
 import models.items.DialogItem
-import models.items.Router
+import models.router.Router
 import models.items.dialog.Dialog
 import models.items.phrase.SimplePhrase
 import java.io.FileOutputStream

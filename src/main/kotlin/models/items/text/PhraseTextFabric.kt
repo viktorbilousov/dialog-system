@@ -8,36 +8,6 @@ import java.io.FileWriter
 
 class PhraseTextFabric {
     companion object {
-        public fun write(text: Array<PhraseText>, pathToFile: String) {
-            val result = Klaxon().toJsonString(text);
-            println(result)
-            val fw = FileWriter(pathToFile)
-            fw.use {
-                it.write(result)
-            }
-        }
-
-        public fun write(phrase: PhraseText, pathToFile: String) {
-            val result = Klaxon().toJsonString(phrase);
-            println(result)
-            val fw = FileWriter(pathToFile)
-            fw.use {
-                it.write(result)
-            }
-        }
-
-        public fun readOne(pathToFile: String): PhraseText? {
-            FileReader(pathToFile).use {
-                return Klaxon().parse<PhraseText>(it.readText())
-            }
-        }
-
-        public fun readMany(pathToFile: String): List<PhraseText>? {
-            FileReader(pathToFile).use {
-                return Klaxon().parseArray(it.readText())
-            }
-        }
-
         public fun toPhrase(pt: PhraseText): Phrase {
             val clazz = Class.forName(pt.clazz);
             clazz.constructors.forEach {
@@ -52,6 +22,5 @@ class PhraseTextFabric {
             }
             throw ClassNotFoundException()
         }
-
     }
 }

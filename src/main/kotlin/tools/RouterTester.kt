@@ -4,7 +4,7 @@ import com.tinkerpop.blueprints.Direction
 import models.Answer
 import models.AnswerType
 import models.items.DialogItem
-import models.items.Router
+import models.router.Router
 import java.lang.IllegalArgumentException
 
 

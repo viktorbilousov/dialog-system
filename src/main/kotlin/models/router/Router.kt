@@ -1,10 +1,11 @@
-package models.items
+package models.router
 
 import com.beust.klaxon.Json
 import com.tinkerpop.blueprints.Direction
 import models.Indexable;
 import com.tinkerpop.blueprints.Graph
 import models.Answer
+import models.items.DialogItem
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
@@ -15,13 +16,10 @@ class Router : Indexable {
         private val logger = LoggerFactory.getLogger(Router::class.java) as Logger
     }
 
-
     private var currentPoint: DialogItem? = null
-
 
     @Json(name = "id")
     override val id: String
-
 
     @Json(name = "isResetToStart")
     public var isResetToStart = false
@@ -33,7 +31,6 @@ class Router : Indexable {
         }
         field = value;
     }
-
 
 
     @Json(name = "startPointId")

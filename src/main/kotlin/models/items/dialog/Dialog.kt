@@ -2,10 +2,9 @@ package models.items.dialog
 import models.Answer;
 import models.AnswerType
 import models.items.DialogItem
-import models.items.Router
+import models.router.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tools.RouterTester
 
 class Dialog : DialogItem {
 
@@ -16,24 +15,25 @@ class Dialog : DialogItem {
     override val id: String
 
     override val answers: Array<Answer>
-        get() = answersList.toTypedArray()
+        get() {
+            val answersList = arrayListOf<Answer>()
+            if(router.items == null) {
+                throw IllegalAccessException("ItemsSet is null!")
+            }
+            router.items!!.values.forEach {
+                it.answers.forEach { asw ->
+                    if (asw.type == AnswerType.EXIT) {
+                        answersList.add(asw)
+                    }
+                }
+            }
+            return answersList.toTypedArray()
+        }
 
-    private val answersList = ArrayList<Answer>()
 
     constructor(id: String, router: Router){
         this.id = id;
         this.router = router;
-        RouterTester.test(router)
-            .isAllVertexHasItems()
-            .isItemsLinkedCorrectly()
-            .checkStartPoint();
-        router.items!!.values.forEach {
-            it.answers.forEach { asw ->
-                if (asw.type == AnswerType.EXIT) {
-                    this.answersList.add(asw)
-                }
-            }
-        }
     }
 
     override fun body(inputAnswer: Answer): Answer {
@@ -56,7 +56,6 @@ class Dialog : DialogItem {
     }
     public fun addItem(item: DialogItem){
         router.addItem(item);
-        item.answers.forEach { if(it.type != AnswerType.SIMPLE) this.answersList.add(it) }
     }
 
 }

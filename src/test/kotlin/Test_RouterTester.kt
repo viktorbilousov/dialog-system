@@ -4,7 +4,7 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import models.Answer
 import models.AnswerType
 import models.items.DialogItem
-import models.items.Router
+import models.router.Router
 import models.items.phrase.EmptyPhrase
 import models.items.phrase.SimplePhrase
 import models.items.text.PhraseText
