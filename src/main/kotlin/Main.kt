@@ -19,6 +19,20 @@ class Main {
         public fun main(args: Array<String>) {
 
 
+
+                val graph = TinkerGraph();
+                val v = hashMapOf<Int, Vertex>()
+                for(i in 1 .. 10){
+                    v[i] = graph.addVertex("$i");
+                    if(i > 1 && i < 10){
+                        graph.addEdge(null, v[i-1], v[i], "${i-1}->${i}")
+                    }
+                }
+
+            val out1 = FileOutputStream("examples/testGraph.xml");
+            GraphMLWriter.outputGraph(graph, out1);
+
+
             val mainGraph: Graph = TinkerGraph();
             val graph_3: Graph = TinkerGraph();
             val graph_4: Graph = TinkerGraph();

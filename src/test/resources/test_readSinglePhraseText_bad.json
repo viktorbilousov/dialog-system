@@ -1,0 +1,10 @@
+{
+  "answers": [
+    {
+      "answ_id": "answer1",
+      "text": "answer text 1",
+      "type": "SIMPLE"
+    },
+    {
+      "answ_id": "answer2",
+      "text": "answer text 2",

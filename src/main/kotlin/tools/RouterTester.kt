@@ -107,8 +107,11 @@ class RouterTester {
 
         @Throws(IllegalAccessException::class)
         public fun isItemsLinkedCorrectly()  : RouterTestClass{
-            val errList = mutableMapOf<String, String>()
+            val errList = hashMapOf<String, String>()
             for (item in items.values) {
+                if(graph.getVertex(item.id) == null) {
+                    continue
+                };
                item.answers.forEach {
                    if(!isConnected(item.id, it.id) && it.type == AnswerType.SIMPLE){
                        errList[item.id] = it.id;
@@ -128,7 +131,7 @@ class RouterTester {
             return false;
         }
 
-        public fun checkTypesOfPhases() {
+        public fun checkTypesOfPhases() : RouterTestClass {
             val errList_enter = arrayListOf<Answer>()
             val errList_simple = arrayListOf<Answer>()
             val errList_exit = arrayListOf<Answer>()
@@ -164,6 +167,7 @@ class RouterTester {
                             "must EXIT: ${errList_exit.toTypedArray().contentToString()}"
                 )
             }
+            return this;
         }
 
         private fun bfs(startPointId: String): Array<String>{

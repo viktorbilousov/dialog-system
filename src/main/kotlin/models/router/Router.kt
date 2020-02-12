@@ -25,6 +25,7 @@ class Router : Indexable {
     @Json(name = "isResetToStart")
     public var isResetToStart = false
 
+    @Json(ignored = true)
     public var items : HashMap<String, DialogItem>? = null
     set(value) {
         if(value == null) {
@@ -43,6 +44,7 @@ class Router : Indexable {
             field = value
         };
 
+    @Json( ignored = true)
     public val startPoint: DialogItem
         get() {
             if (startPointId == null) {
@@ -51,6 +53,7 @@ class Router : Indexable {
             return get(startPointId!!)
         }
 
+    @Json( ignored = true)
     public val graph: Graph
         get
 
@@ -97,7 +100,7 @@ class Router : Indexable {
     }
 
     public fun goTo(id: String) : DialogItem?{
-        logger.info("[$id] << goTo: $id")
+        logger.info("[$this.id] << goTo: $id")
         if(items == null){
             throw IllegalAccessException("Items is null!")
         }
@@ -114,32 +117,39 @@ class Router : Indexable {
     }
 
     private fun get(id: String): DialogItem {
+        logger.info("[$this.id] >> get: $id")
         if(items == null){
+            logger.error("Items is null!")
             throw IllegalAccessException("Items is null!")
         }
         else if (items!![id] == null) {
+            logger.error("${this.id}] Item id='$id' not found")
             throw IllegalAccessException("[${this.id}] Item id='$id' not found")
         };
         else {
-            return items!![id]!!;
+            logger.info("[$this.id] << get: return: ${items!![id]!!}")
+            return items!![id]!!
         }
     }
 
     public fun addItem(item: DialogItem) {
+        logger.info("[$this.id] >> addItem: $item")
+
         if(items == null){
+            logger.error("Items is null!")
             throw IllegalAccessException("Items is null!")
         }
         else if (items!![item.id] != null) {
             logger.warn("$id: Rewrite ${items!![item.id]?.id} to ${item.id}")
         }
         items!![item.id] = item;
+        logger.info("[$this.id] << addItem: OK")
     }
 
     public fun contains(id: String): Boolean{
         return this.graph.getEdge(id) != null  && items!![id] != null;
     }
 
-    // TODO : need to test
     private fun isConnected(source: DialogItem, dest: DialogItem): Boolean {
         for (edge in graph.edges) {
             val v1 = edge.getVertex(Direction.IN).getProperty<String>("vId")
@@ -147,6 +157,10 @@ class Router : Indexable {
             if (source.id == v1 && dest.id == v2) return true;
         }
         return false;
+    }
+
+    override fun toString(): String {
+        return "{id=$id, startPointId=$startPointId, graph=$graph}"
     }
 
 

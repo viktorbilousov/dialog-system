@@ -6,9 +6,11 @@ import models.AnswerType
 import models.items.text.PhraseText
 import models.items.text.PhraseTextStream
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.io.FileNotFoundException
 import java.io.FileReader
+import java.lang.IllegalArgumentException
 
 class Test_PhraseTextStream {
 
@@ -35,6 +37,35 @@ class Test_PhraseTextStream {
 
         testPhraseTextWithJsonObject(actualPhraseText, input)
 
+    }
+
+    @Test fun readOne_EmptyFile(){
+        val pathToFile = "./src/test/resources/writeSinglePhraseText1234.json"
+        assertThrows<FileNotFoundException>{ PhraseTextStream.readOne(pathToFile)}
+    }
+    @Test fun readMany_EmptyFile(){
+        val pathToFile = "./src/test/resources/writeSinglePhraseText1234.json"
+        assertThrows<FileNotFoundException>{ PhraseTextStream.readMany(pathToFile)}
+    }
+
+    @Test fun readMany_objectFile(){
+        val pathToFile = "./src/test/resources/test_readSinglePhraseText.json"
+        assertThrows<IllegalArgumentException>{PhraseTextStream.readMany(pathToFile)}
+    }
+
+    @Test fun readOne_arrayFile(){
+        val pathToFile = "./src/test/resources/test_readMultiplyPhraseText.json"
+        assertThrows<IllegalArgumentException>{PhraseTextStream.readOne(pathToFile)}
+    }
+
+    @Test fun readOne_badFile(){
+        val pathToFile = "./src/test/resources/test_readSinglePhraseText_bad.json"
+        assertThrows<IllegalArgumentException>{PhraseTextStream.readOne(pathToFile)}
+    }
+
+    @Test fun readMany_badFile(){
+        val pathToFile = "./src/test/resources/test_readMultiplyPhraseText_bad.json"
+        assertThrows<IllegalArgumentException>{PhraseTextStream.readOne(pathToFile)}
     }
 
     @Test
@@ -101,6 +132,8 @@ class Test_PhraseTextStream {
         val input = Klaxon().parseJsonObject(FileReader(pathToFile));
         testPhraseTextWithJsonObject(expectedId, expectedTexts, expectedAnswers, input)
     }
+
+
 
 
     private fun createTestPhraseText(): PhraseText {
