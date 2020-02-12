@@ -12,7 +12,8 @@ class Dialog : DialogItem {
     companion object{
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
-    private val router: Router
+    public val router: Router
+
     override val id: String
     private var currentItem : DialogItem;
 
