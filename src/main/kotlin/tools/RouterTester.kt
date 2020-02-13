@@ -27,7 +27,7 @@ class RouterTester {
             this.items = router.items!!
             if(items.isEmpty()) throw IllegalAccessException("items list is empty!")
             if(!graph.vertices.iterator().hasNext()) throw IllegalAccessException("vertices in the graph is empty!")
-            if(!graph.edges.iterator().hasNext()) throw IllegalAccessException("edges in the graph is empty!")
+           // if(!graph.edges.iterator().hasNext()) throw IllegalAccessException("edges in the graph is empty!")
 
             graph.vertices.forEach{
                 vertexMap[it.getProperty(Indexable.ID_NAME)] = it;

@@ -118,7 +118,7 @@ class Router : Indexable {
     }
 
     private fun getItem(id: String): DialogItem {
-        logger.info("[$this.id] >> get: $id")
+        logger.info("[${this.id}] >> get: $id")
         if(items == null){
             logger.error("Items is null!")
             throw IllegalAccessException("Items is null!")
@@ -128,15 +128,15 @@ class Router : Indexable {
             throw IllegalAccessException("${this.id}] Item id='$id' not found")
         }
         if(!contains(id)){
-            logger.error("router ${this.id}] not containd Item id='$id'")
-            throw IllegalAccessException("router ${this.id}] not containd Item id='$id")
+            logger.error("router ${this.id} not containd Item id=$id")
+            throw IllegalAccessException("router ${this.id} not containd Item id=$id")
         }
         logger.info("[$this.id] << get: return: ${items!![id]!!}")
         return items!![id]!!
     }
 
     public fun addItem(item: DialogItem) {
-        logger.info("[$this.id] >> addItem: $item")
+        logger.info("[${this.id} >> addItem: $item")
 
         if(items == null){
             logger.error("Items is null!")

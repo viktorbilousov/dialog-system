@@ -50,7 +50,7 @@ class Dialog : DialogItem {
             answer =  currentItem!!.run(answer)
             logger.info("[$id] answer is $answer")
             if(answer.type == AnswerType.EXIT || answer.type == AnswerType.ENTER){
-                logger.info("[$id] << body DIALOG return ${answer.toString()}")
+                logger.info("[$id] << body DIALOG return ${answer}")
                 return answer;
             }else {
                 currentItem = router.getNext(answer)
