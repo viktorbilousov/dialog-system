@@ -11,7 +11,7 @@ import com.beust.klaxon.Json
      public var text: String
 
      @Json(name = "type")
-     public var type = AnswerType.SIMPLE
+     public var type : AnswerType
 
      companion object{
          public fun empty () : Answer{

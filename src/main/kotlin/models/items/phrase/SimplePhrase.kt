@@ -5,7 +5,7 @@ import tools.PhrasePrinter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class SimplePhrase : Phrase {
+open class SimplePhrase : Phrase {
 
 
     companion object{

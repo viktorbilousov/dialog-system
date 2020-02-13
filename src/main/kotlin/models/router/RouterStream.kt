@@ -13,7 +13,6 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
 
-
 class RouterStream {
     companion object{
         private val logger = LoggerFactory.getLogger(Router::class.java) as Logger
@@ -48,18 +47,16 @@ class RouterStream {
                 }
                 properties = getProperties(routerObj!!);
             }
-            val pathToGraph = StringBuilder(pathToGraphsFolder)
-                .append("/")
-                .append("${properties["id"]}.xml")
-                .toString()
-                .replace("//", "/")
 
-            if(!File(pathToGraph).exists()){
+            val pathToGraph =  File(pathToGraphsFolder, "${properties["id"]}.graphml" )
+
+
+            if(!pathToGraph.exists()){
                 logger.error("$pathToGraph not found")
                 throw FileNotFoundException("$pathToGraph not found")
             }
 
-            GraphMLReader.inputGraph(graph, pathToGraph);
+            GraphMLReader.inputGraph(graph, pathToGraph.absolutePath);
 
             logger.info("read graph: OK, " +
                     "V=${graph.vertices.toList().toTypedArray().contentToString()}, " +
@@ -99,17 +96,15 @@ class RouterStream {
                 }
             }
             for (properties in propertiesList) {
-                val pathToGraph = StringBuilder(pathToGraphsFolder)
-                    .append("/")
-                    .append("${properties["id"]}.xml")
-                    .toString()
-                    .replace("//", "/")
 
-                if(!File(pathToGraph).exists()){
+                val pathToGraph =  File(pathToGraphsFolder, "${properties["id"]}.graphml" )
+
+                if(!pathToGraph.exists()){
+                    logger.warn("$pathToGraph not found")
                     throw FileNotFoundException("$pathToGraph not found")
                 }
                 val graph = TinkerGraph();
-                GraphMLReader.inputGraph(graph, pathToGraph);
+                GraphMLReader.inputGraph(graph, pathToGraph.absolutePath);
 
                 logger.info("read graph: OK, " +
                         "V=${graph.vertices.toList().toTypedArray().contentToString()}, " +
@@ -154,12 +149,12 @@ class RouterStream {
             fw.use {
                 it.write(result)
             }
-            logger.info("<< write: ${obj.toString()}")
+            logger.info("<< write: $obj")
         }
 
         public fun write(router: Router, pathToFile: String, pathToGraphsFolder: String) {
             logger.info(">> write router=$router, pathToFile=$pathToFile, pathToGraphsFolder=$pathToGraphsFolder")
-            val pathGraph = pathToGraphsFolder + "\\${router.id}.xml"
+            val pathGraph = pathToGraphsFolder + "//${router.id}.graphml"
             write(router as Any, pathToFile);
             logger.info(" write a graph to $pathGraph")
             GraphMLWriter.outputGraph(router.graph, pathGraph);
@@ -170,7 +165,7 @@ class RouterStream {
             logger.info(">> write routerArray=${router.contentToString()}, pathToFile=$pathToFile, pathToGraphsFolder=$pathToGraphsFolder")
             write(router, pathToFile)
             router.forEach {
-                val pathGraph = pathToGraphsFolder + "\\${it.id}.xml"
+                val pathGraph = pathToGraphsFolder + "//${it.id}.graphml"
                 logger.info(" write a graph to $pathGraph")
                 GraphMLWriter.outputGraph(it.graph, pathGraph);
                 logger.info(" write a graph : ok")

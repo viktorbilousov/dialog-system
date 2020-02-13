@@ -4,6 +4,7 @@ import com.beust.klaxon.Json
 import com.tinkerpop.blueprints.Direction
 import models.Indexable;
 import com.tinkerpop.blueprints.Graph
+import com.tinkerpop.blueprints.Vertex
 import models.Answer
 import models.items.DialogItem
 import org.slf4j.Logger
@@ -50,7 +51,7 @@ class Router : Indexable {
             if (startPointId == null) {
                 throw IllegalArgumentException("start point is null!")
             }
-            return get(startPointId!!)
+            return getItem(startPointId!!)
         }
 
     @Json( ignored = true)
@@ -64,13 +65,13 @@ class Router : Indexable {
         this.id = id
     }
 
-    constructor(id: String, graph: Graph, items: HashMap<String, DialogItem>) {
+    constructor(id: String, graph: Graph, items: HashMap<String, DialogItem>?) {
         this.graph = graph
         this.id = id
         this.items = items
     }
 
-    constructor(id: String, graph: Graph, items: HashMap<String, DialogItem>, startPointId: String) {
+    constructor(id: String, graph: Graph, items: HashMap<String, DialogItem>?, startPointId: String) {
         this.graph = graph
         this.id = id
         this.items = items
@@ -80,7 +81,7 @@ class Router : Indexable {
     constructor(
         id: String,
         graph: Graph,
-        items: HashMap<String, DialogItem>,
+        items: HashMap<String, DialogItem>?,
         startPointId: String,
         isResetToStart: Boolean
     ) : this(id, graph, items, startPointId) {
@@ -90,8 +91,9 @@ class Router : Indexable {
 
     public fun getNext(answer: Answer): DialogItem {
         logger.info("[$id] << intput: $answer")
-        val res = get(answer.id)
-        if (currentPoint != null && !isConnected(res, currentPoint!!)) {
+        val res = getItem(answer.id)
+        if (currentPoint != null && !isConnected( currentPoint!!.id, res.id)) {
+            logger.error("Items '${currentPoint?.id}' and '${res.id}' not connected")
             throw throw IllegalAccessException("Items '${currentPoint?.id}' and '${res.id}' not connected");
         }
         currentPoint = res;
@@ -102,34 +104,35 @@ class Router : Indexable {
     public fun goTo(id: String) : DialogItem?{
         logger.info("[$this.id] << goTo: $id")
         if(items == null){
-            throw IllegalAccessException("Items is null!")
+            throw IllegalAccessException("Item is null!")
         }
-
-        var res : DialogItem? = null;
-        if(items!![id] != null && graph.getVertex(id)!= null) {
-            res = items!![id];
-            currentPoint = res
-        }
-        logger.info("[$id] >> output item: ${res?.id}")
+        val res =
+            try{
+                getItem(id);
+            }catch (e: Exception){
+                return null;
+            }
+        currentPoint = res
+        logger.info("[$id] >> output item: ${res.id}")
         return res;
-
-
     }
 
-    private fun get(id: String): DialogItem {
+    private fun getItem(id: String): DialogItem {
         logger.info("[$this.id] >> get: $id")
         if(items == null){
             logger.error("Items is null!")
             throw IllegalAccessException("Items is null!")
         }
-        else if (items!![id] == null) {
+        if (items!![id] == null) {
             logger.error("${this.id}] Item id='$id' not found")
-            throw IllegalAccessException("[${this.id}] Item id='$id' not found")
-        };
-        else {
-            logger.info("[$this.id] << get: return: ${items!![id]!!}")
-            return items!![id]!!
+            throw IllegalAccessException("${this.id}] Item id='$id' not found")
         }
+        if(!contains(id)){
+            logger.error("router ${this.id}] not containd Item id='$id'")
+            throw IllegalAccessException("router ${this.id}] not containd Item id='$id")
+        }
+        logger.info("[$this.id] << get: return: ${items!![id]!!}")
+        return items!![id]!!
     }
 
     public fun addItem(item: DialogItem) {
@@ -147,14 +150,31 @@ class Router : Indexable {
     }
 
     public fun contains(id: String): Boolean{
-        return this.graph.getEdge(id) != null  && items!![id] != null;
+        return getVertex(id) != null  && items!![id] != null;
     }
 
-    private fun isConnected(source: DialogItem, dest: DialogItem): Boolean {
+    private fun getVertex(itemId: String): Vertex?{
+        for (vertex in graph.vertices) {
+            if(vertex.getProperty<String>(Indexable.ID_NAME) == itemId){
+                return vertex;
+            }
+        }
+        logger.warn("vertex of item $itemId not found")
+        return null;
+    }
+
+   /* private fun isConnected(source: DialogItem, dest: DialogItem): Boolean {
         for (edge in graph.edges) {
-            val v1 = edge.getVertex(Direction.IN).getProperty<String>("vId")
-            val v2 = edge.getVertex(Direction.OUT).getProperty<String>("vId")
+            val v1 = edge.getVertex(Direction.OUT).getProperty<String>(Indexable.ID_NAME)
+            val v2 = edge.getVertex(Direction.IN).getProperty<String>(Indexable.ID_NAME)
             if (source.id == v1 && dest.id == v2) return true;
+        }
+        return false;
+    }*/
+
+    private fun isConnected(sourceId: String, destId:String) : Boolean {
+        getVertex(sourceId)?.getEdges(Direction.OUT)?.forEach{
+            if(it.getVertex(Direction.IN).getProperty(Indexable.ID_NAME) as String == destId) return true;
         }
         return false;
     }

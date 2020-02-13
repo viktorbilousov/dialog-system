@@ -1,8 +1,10 @@
 package tools
 
 import com.tinkerpop.blueprints.Direction
+import com.tinkerpop.blueprints.Vertex
 import models.Answer
 import models.AnswerType
+import models.Indexable
 import models.items.DialogItem
 import models.router.Router
 import java.lang.IllegalArgumentException
@@ -19,20 +21,26 @@ class RouterTester {
     class RouterTestClass(private val router : Router){
         private val graph  = router.graph
         private val items : HashMap<String, DialogItem>
+        private val vertexMap = HashMap<String, Vertex>()
         init {
             if(router.items == null ) throw IllegalAccessException("items list is null!")
             this.items = router.items!!
             if(items.isEmpty()) throw IllegalAccessException("items list is empty!")
             if(!graph.vertices.iterator().hasNext()) throw IllegalAccessException("vertices in the graph is empty!")
             if(!graph.edges.iterator().hasNext()) throw IllegalAccessException("edges in the graph is empty!")
+
+            graph.vertices.forEach{
+                vertexMap[it.getProperty(Indexable.ID_NAME)] = it;
+            }
         }
 
         @Throws(IllegalAccessException::class)
         public fun isAllVertexHasItems() : RouterTestClass{
             val list = mutableListOf<String>()
             graph.vertices.forEach{
-                if(items[it.id] == null) {
-                    list.add(it.id.toString());
+                val id = it.getProperty<String>(Indexable.ID_NAME);
+                if(items[id] == null) {
+                    list.add("id:${it.id} item:$id")
                 }
             }
             if(list.isNotEmpty()){
@@ -55,9 +63,8 @@ class RouterTester {
         public fun isAllItemsHasVertex() : RouterTestClass{
             val list = mutableListOf<String>()
 
-
            items.forEach{
-               if(graph.getVertex(it.key) == null){
+               if(vertexMap[it.key] == null){
                    list.add(it.key);
                }
            }
@@ -109,7 +116,7 @@ class RouterTester {
         public fun isItemsLinkedCorrectly()  : RouterTestClass{
             val errList = hashMapOf<String, String>()
             for (item in items.values) {
-                if(graph.getVertex(item.id) == null) {
+                if(vertexMap[item.id] == null) {
                     continue
                 };
                item.answers.forEach {
@@ -125,8 +132,8 @@ class RouterTester {
         }
 
         private fun isConnected(sourceId: String, destId:String) : Boolean{
-            graph.getVertex(sourceId).getEdges(Direction.OUT).forEach{
-                if(it.getVertex(Direction.IN).id as String == destId) return true;
+            vertexMap[sourceId]?.getEdges(Direction.OUT)?.forEach{
+                if(it.getVertex(Direction.IN).getProperty(Indexable.ID_NAME) as String == destId) return true;
             }
             return false;
         }

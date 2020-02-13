@@ -15,7 +15,7 @@ class Dialog : DialogItem {
     public val router: Router
 
     override val id: String
-    private var currentItem : DialogItem;
+    private var currentItem : DialogItem? = null
 
     override val answers: Array<Answer>
         get() {
@@ -37,20 +37,20 @@ class Dialog : DialogItem {
     constructor(id: String, router: Router){
         this.id = id;
         this.router = router;
-        currentItem = router.startPoint;
     }
 
     override fun body(inputAnswer: Answer): Answer {
         logger.info("[DIALOG] [$id] >> body")
+        if(currentItem == null) {
+            currentItem = router.startPoint
+        };
         var answer = inputAnswer;
         while (true) {
-            logger.info("[$id] run item: ${currentItem.id} ")
-            answer =  currentItem.run(answer)
+            logger.info("[$id] run item: ${currentItem!!.id} ")
+            answer =  currentItem!!.run(answer)
             logger.info("[$id] answer is $answer")
             if(answer.type == AnswerType.EXIT || answer.type == AnswerType.ENTER){
-                logger.info("return ${answer}")
-                logger.info("[$id] << body DIALOG")
-                answer.type=AnswerType.SIMPLE;
+                logger.info("[$id] << body DIALOG return ${answer.toString()}")
                 return answer;
             }else {
                 currentItem = router.getNext(answer)
