@@ -1,8 +1,10 @@
 package models.items.phrase
 
 import models.Answer
+import models.AnswerType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tools.AnswersTool
 
 class FilteredPhrase : Phrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
@@ -12,16 +14,16 @@ class FilteredPhrase : Phrase {
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
 
-    private val count = 0;
+    private var count = 0;
 
     private val filtesAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
     private val filtesPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
 
-    public fun <T: Phrase> addAnswerFilter(name: String, filter: (Array<Answer>, Int) -> Array<Answer>){
+    public fun addAnswerFilter(name: String, filter: (Array<Answer>, Int) -> Array<Answer>){
         filtesAnswerMap[name] = filter;
     }
 
-    public fun <T: Phrase> addPhrasesFilter(name: String, filter: (Array<String>, Int) -> Array<String>){
+    public fun addPhrasesFilter(name: String, filter: (Array<String>, Int) -> Array<String>){
         filtesPhrasesMap[name] = filter;
     }
 
@@ -37,7 +39,8 @@ class FilteredPhrase : Phrase {
 
     override fun body(inputAnswer: Answer): Answer {
         logger.info("[$id]>> body SIMPLE Phrase: input = $inputAnswer")
-        var answers = this.answers.clone()
+        count++;
+        var answers = AnswersTool.copyArrayOrAnswers(this.answers)
         var phrases = this.phrases.clone();
         for (value in filtesAnswerMap.values) {
             answers = value(answers, count);
