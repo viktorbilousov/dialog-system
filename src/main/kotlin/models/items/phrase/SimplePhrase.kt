@@ -1,7 +1,7 @@
 package models.items.phrase
 
 import models.Answer
-import tools.PhrasePrinter
+import tools.SimplePhrasePrinter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -18,7 +18,7 @@ open class SimplePhrase : Phrase {
 
     override fun body(inputAnswer: Answer): Answer {
         logger.info("[$id]>> body SIMPLE Phrase: input = $inputAnswer")
-        val res =  PhrasePrinter.printTextDialog(phrases[0], answers)
+        val res = phrasePrinter.printTextDialog(phrases, answers)
         logger.info("[$id]<< body SIMPLE Phrase: output = $res")
         return res;
     }

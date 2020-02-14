@@ -5,8 +5,9 @@ import models.items.DialogItem
 import models.items.text.PhraseText
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tools.SimplePhrasePrinter
 
-abstract class Phrase : DialogItem {
+abstract class Phrase : DialogItem  {
     companion object{
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
@@ -16,7 +17,7 @@ abstract class Phrase : DialogItem {
 
     final override val id: String
 
-    private val answersList = arrayListOf<Answer>();
+    public var phrasePrinter = SimplePhrasePrinter();
 
     override val answers: Array<Answer>
         get() = texts.answers;
@@ -27,7 +28,6 @@ abstract class Phrase : DialogItem {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>){
         this.id = id
         this.texts = PhraseText(id, phrases, answers)
-        this.answersList.addAll(answers)
     }
 
     constructor(id: String, phrases: PhraseText){

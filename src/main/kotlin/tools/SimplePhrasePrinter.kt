@@ -1,10 +1,11 @@
 package tools
 import models.Answer
+import models.items.phrase.PhrasePrinter
 import java.lang.StringBuilder
 import java.util.*
 
-class PhrasePrinter {
-    companion object{
+class SimplePhrasePrinter : PhrasePrinter {
+
         public fun createMessage(text: String, answer: Array<Answer>): String{
             val builder = StringBuilder();
             builder.append(text);
@@ -28,9 +29,9 @@ class PhrasePrinter {
             }
         }
 
-        public fun printTextDialog(text: String, answer: Array<Answer>): Answer{
-            println(createMessage(text, answer));
+        public override fun printTextDialog(text: Array<String>, answer: Array<Answer>): Answer{
+            println(createMessage(text[0], answer));
             return input(answer);
         }
-    }
+
 }

@@ -1,7 +1,7 @@
 package models.items.phrase
 
 import models.Answer
-import tools.PhrasePrinter
+import tools.SimplePhrasePrinter
 import java.util.*
 import kotlin.math.abs
 import org.slf4j.Logger
@@ -17,7 +17,7 @@ class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> )
 
     override fun body(inputAnswer: Answer): Answer {
         logger.info("[$id]>> body RANDOM Phrase: input = $inputAnswer")
-        val res = PhrasePrinter.printTextDialog(phrases[abs(random.nextInt(phrases.size))], answers)
+        val res = phrasePrinter.printTextDialog(arrayOf(phrases[abs(random.nextInt(phrases.size))]), answers)
         logger.info("[$id]<< body RANDOM Phrase: input = $res")
         return res;
     }
