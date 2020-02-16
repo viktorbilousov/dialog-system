@@ -6,7 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tools.AnswersTool
 
-class FilteredPhrase : Phrase {
+open class FilteredPhrase : Phrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
     constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
 

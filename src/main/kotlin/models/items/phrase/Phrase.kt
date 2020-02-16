@@ -17,7 +17,7 @@ abstract class Phrase : DialogItem  {
 
     final override val id: String
 
-    public var phrasePrinter = SimplePhrasePrinter();
+    public var phrasePrinter :PhrasePrinter  = SimplePhrasePrinter()
 
     override val answers: Array<Answer>
         get() = texts.answers;
