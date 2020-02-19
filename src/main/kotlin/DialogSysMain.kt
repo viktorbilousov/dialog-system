@@ -14,7 +14,7 @@ import java.io.FileOutputStream
 import java.util.HashMap
 
 
-class Main {
+class DialogSysMain {
     companion object {
         @JvmStatic
         public fun main(args: Array<String>) {
