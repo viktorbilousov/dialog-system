@@ -15,18 +15,32 @@ class PhraseText: Indexable {
     override val id: String
 
     @Json(name="class")
-    public val clazz : String = SimplePhrase::class.java.name;
+    public val clazz : String 
 
-    constructor(id: String, text: Array<String>, answers: Array<Answer>)  {
+
+    companion object{
+        private val DEF_CLASS = SimplePhrase::class.java.name.toString()
+    }
+
+
+    constructor(id: String, text: Array<String>, answers: Array<Answer>): this(id, text, answers, DEF_CLASS) {}
+
+    constructor(id: String, text: String, answers: Array<Answer>): this(id, text, answers, DEF_CLASS) {}
+
+
+    constructor(id: String, text: Array<String>, answers: Array<Answer>, clazz: String)  {
         this.id = id
         this.text = text
         this.answers = answers
+        this.clazz = clazz
     }
 
-    constructor(id: String, text: String, answers: Array<Answer>)  {
+
+    constructor(id: String, text: String, answers: Array<Answer>, clazz: String)  {
         this.id = id
         this.text = arrayOf(text)
         this.answers = answers
+        this.clazz = clazz
     }
 
     override fun toString(): String {
