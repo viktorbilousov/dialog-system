@@ -9,18 +9,18 @@ import org.slf4j.LoggerFactory
 
 class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> ) : FilteredPhrase(id, phrases, answers) {
 
-    companion object{
+    companion object {
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
 
-    private val random = Random();
-
-    override fun body(inputAnswer: Answer): Answer {
-        logger.info("[$id]>> body RANDOM Phrase: input = $inputAnswer")
-        val res = phrasePrinter.printTextDialog(arrayOf(phrases[abs(random.nextInt(phrases.size))]), answers)
-        logger.info("[$id]<< body RANDOM Phrase: input = $res")
-        return res;
+    init {
+        this.phrasePrinter = object : PhrasePrinter {
+            private val random = Random();
+            override fun printTextDialog(text: Array<String>, answer: Array<Answer>): Answer {
+                val printer = SimplePhrasePrinter()
+                println(printer.createMessage(text[random.nextInt(text.size)], answer));
+                return printer.input(answer);
+            }
+        }
     }
-
-
 }
