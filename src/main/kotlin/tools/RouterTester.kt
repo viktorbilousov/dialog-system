@@ -106,7 +106,7 @@ class RouterTester {
             val arr = bfs(graph.vertices.iterator().next().id as String);
             if(arr.size != graph.vertices.count()){
                val list = mutableListOf<String>()
-                 graph.vertices.forEach { if(!arr.contains(it.id as String)) list.add(it.id as String)}
+                 graph.vertices.forEach { if(!arr.contains(it.getProperty(Indexable.ID_NAME) as String)) list.add(it.getProperty(Indexable.ID_NAME) as String)}
                 throw IllegalAccessException("graph not Related!, check vertexes: ${list.toTypedArray().contentToString()}")
             }
             return this

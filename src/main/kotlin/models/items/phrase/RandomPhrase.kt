@@ -7,7 +7,7 @@ import kotlin.math.abs
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> ) : Phrase(id, phrases, answers) {
+class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> ) : FilteredPhrase(id, phrases, answers) {
 
     companion object{
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
