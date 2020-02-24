@@ -15,23 +15,41 @@ open class FilteredPhrase : Phrase {
 
     private var count = 0;
 
-    private val filtersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
-    private val filtersPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
+    private val firstFiltersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
+    private val lastFiltersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
+    private val firstFiltersPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
+    private val lastFiltersPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
 
     public fun addAnswerFilter(name: String, filter: (Array<Answer>, Int) -> Array<Answer>){
-        filtersAnswerMap[name] = filter;
+        addAnswerFilter(name, Order.First, filter)
+    }
+
+    public fun addPhrasesFilter(name: String, order: Order, filter: (Array<String>, Int) -> Array<String>){
+        when(order){
+            Order.Last ->  lastFiltersPhrasesMap[name] = filter;
+            Order.First -> firstFiltersPhrasesMap[name] = filter;
+        }
+    }
+
+    public fun addAnswerFilter(name: String, order: Order, filter: (Array<Answer>, Int) -> Array<Answer>){
+        when(order){
+            Order.Last ->  lastFiltersAnswerMap[name] = filter;
+            Order.First -> firstFiltersAnswerMap[name] = filter;
+        }
     }
 
     public fun addPhrasesFilter(name: String, filter: (Array<String>, Int) -> Array<String>){
-        filtersPhrasesMap[name] = filter;
+        addPhrasesFilter(name, Order.First, filter)
     }
 
     public fun removePhraseFilter(name: String){
-        filtersPhrasesMap.remove(name);
+        firstFiltersPhrasesMap.remove(name);
+        lastFiltersPhrasesMap.remove(name);
     }
 
     public fun removeAnswerFilter(name: String){
-        filtersAnswerMap.remove(name)
+        firstFiltersAnswerMap.remove(name);
+        lastFiltersAnswerMap.remove(name);
     }
 
 
@@ -41,10 +59,16 @@ open class FilteredPhrase : Phrase {
         count++;
         var answers = AnswersTool.copyArrayOrAnswers(this.answers)
         var phrases = this.phrases.clone();
-        for (value in filtersAnswerMap.values) {
+        for (value in firstFiltersAnswerMap.values) {
             answers = value(answers, count);
         }
-        for (value in filtersPhrasesMap.values) {
+        for (value in lastFiltersAnswerMap.values) {
+            answers = value(answers, count);
+        }
+        for (value in firstFiltersPhrasesMap.values) {
+            phrases = value(phrases, count);
+        }
+        for (value in lastFiltersPhrasesMap.values) {
             phrases = value(phrases, count);
         }
         val phrase = phraseChooser.choose(phrases)
@@ -52,5 +76,9 @@ open class FilteredPhrase : Phrase {
         val res =  answerChooser.chooseAnswer(answers)
         logger.info("[$id]<< body Filtered  Phrase: output = $res")
         return res;
+    }
+
+    enum class Order{
+        First, Last
     }
 }
