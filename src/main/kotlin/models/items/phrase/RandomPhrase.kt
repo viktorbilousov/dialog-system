@@ -13,14 +13,14 @@ class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> )
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
 
+
     init {
-        this.phrasePrinter = object : PhrasePrinter {
+        this.phraseChooser = object : PhraseChooser{
             private val random = Random();
-            override fun printTextDialog(text: Array<String>, answer: Array<Answer>): Answer {
-                val printer = SimplePhrasePrinter()
-                println(printer.createMessage(text[random.nextInt(text.size)], answer));
-                return printer.input(answer);
+            override fun choose(phrases: Array<String>): String {
+                return phrases[random.nextInt(phrases.size)]
             }
         }
+
     }
 }

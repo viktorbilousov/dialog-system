@@ -18,7 +18,9 @@ open class SimplePhrase : Phrase {
 
     override fun body(inputAnswer: Answer): Answer {
         logger.info("[$id]>> body SIMPLE Phrase: input = $inputAnswer")
-        val res = phrasePrinter.printTextDialog(phrases, answers)
+        val phrase = phraseChooser.choose(phrases)
+        phrasePrinter.printTextDialog(phrase, answers)
+        val res =  answerChooser.chooseAnswer(answers)
         logger.info("[$id]<< body SIMPLE Phrase: output = $res")
         return res;
     }

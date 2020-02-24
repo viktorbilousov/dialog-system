@@ -1,7 +1,6 @@
 package models.items.phrase
 
 import models.Answer
-import models.AnswerType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tools.AnswersTool
@@ -16,40 +15,42 @@ open class FilteredPhrase : Phrase {
 
     private var count = 0;
 
-    private val filtesAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
-    private val filtesPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
+    private val filtersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
+    private val filtersPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
 
     public fun addAnswerFilter(name: String, filter: (Array<Answer>, Int) -> Array<Answer>){
-        filtesAnswerMap[name] = filter;
+        filtersAnswerMap[name] = filter;
     }
 
     public fun addPhrasesFilter(name: String, filter: (Array<String>, Int) -> Array<String>){
-        filtesPhrasesMap[name] = filter;
+        filtersPhrasesMap[name] = filter;
     }
 
     public fun removePhraseFilter(name: String){
-        filtesPhrasesMap.remove(name);
+        filtersPhrasesMap.remove(name);
     }
 
     public fun removeAnswerFilter(name: String){
-        filtesAnswerMap.remove(name)
+        filtersAnswerMap.remove(name)
     }
 
 
 
     override fun body(inputAnswer: Answer): Answer {
-        logger.info("[$id]>> body SIMPLE Phrase: input = $inputAnswer")
+        logger.info("[$id]>> body Filtered Phrase: input = $inputAnswer")
         count++;
         var answers = AnswersTool.copyArrayOrAnswers(this.answers)
         var phrases = this.phrases.clone();
-        for (value in filtesAnswerMap.values) {
+        for (value in filtersAnswerMap.values) {
             answers = value(answers, count);
         }
-        for (value in filtesPhrasesMap.values) {
+        for (value in filtersPhrasesMap.values) {
             phrases = value(phrases, count);
         }
-        val res =  phrasePrinter.printTextDialog(phrases, answers)
-        logger.info("[$id]<< body SIMPLE Phrase: output = $res")
+        val phrase = phraseChooser.choose(phrases)
+        phrasePrinter.printTextDialog(phrase, answers)
+        val res =  answerChooser.chooseAnswer(answers)
+        logger.info("[$id]<< body Filtered  Phrase: output = $res")
         return res;
     }
 }

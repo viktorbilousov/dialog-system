@@ -15,23 +15,10 @@ class SimplePhrasePrinter : PhrasePrinter {
             }
             return builder.toString()
         }
-        public fun input(answer: Array<Answer>): Answer{
-            while (true) {
-                println("Enter the number:\n>")
-                val input = Scanner(System.`in`)
-                val stringInput = input.nextLine()
-                val num = stringInput.toIntOrNull();
-                if (num == null || num > answer.size || num < 1) {
-                    println("InputError: please enter number")
-                    continue
-                }
-                return answer[num-1]
-            }
-        }
 
-        public override fun printTextDialog(text: Array<String>, answer: Array<Answer>): Answer{
-            println(createMessage(text[0], answer));
-            return input(answer);
+
+        public override fun printTextDialog(text: String, answer: Array<Answer>){
+            println(createMessage(text, answer));
         }
 
 }

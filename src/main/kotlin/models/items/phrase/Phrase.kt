@@ -5,6 +5,9 @@ import models.items.DialogItem
 import models.items.text.PhraseText
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tools.AnswersTool
+import tools.ConsoleAnswerChooser
+import tools.FirstPhraseChooser
 import tools.SimplePhrasePrinter
 
 abstract class Phrase : DialogItem  {
@@ -17,7 +20,9 @@ abstract class Phrase : DialogItem  {
 
     final override val id: String
 
-    public var phrasePrinter :PhrasePrinter  = SimplePhrasePrinter()
+    public var phrasePrinter : PhrasePrinter  = SimplePhrasePrinter()
+    public var phraseChooser : PhraseChooser  = FirstPhraseChooser()
+    public var answerChooser : AnswerChooser  = ConsoleAnswerChooser()
 
     override val answers: Array<Answer>
         get() = texts.answers;
@@ -38,4 +43,5 @@ abstract class Phrase : DialogItem  {
     override fun toString(): String {
        return "{${this.javaClass.simpleName}: id=$id, phrases=${texts}}"
     }
+
 }
