@@ -55,26 +55,39 @@ open class FilteredPhrase : Phrase {
 
 
     override fun body(inputAnswer: Answer): Answer {
-        logger.info("[$id]>> body Filtered Phrase: input = $inputAnswer")
+        logger.info("[$id]>> body Filtered Phrase: input = $inputAnswer, count = ${count+1}")
         count++;
         var answers = AnswersTool.copyArrayOrAnswers(this.answers)
         var phrases = this.phrases.clone();
-        for (value in firstFiltersAnswerMap.values) {
-            answers = value(answers, count);
+        logger.info("[$id] call high priority answers filters")
+        for (entry in firstFiltersAnswerMap) {
+            logger.info("call filter: '${entry.key}', input answer  ${answers.contentToString()}")
+            answers = entry.value(answers, count);
+            logger.info("result answer: ${answers.contentToString()}")
         }
-        for (value in lastFiltersAnswerMap.values) {
-            answers = value(answers, count);
+        logger.info("[$id] call low priority answers filters")
+        for (entry in lastFiltersAnswerMap) {
+            logger.info("call filter: '${entry.key}', input answer  ${answers.contentToString()}")
+            answers = entry.value(answers, count);
+            logger.info("result answer: ${answers.contentToString()}")
         }
-        for (value in firstFiltersPhrasesMap.values) {
-            phrases = value(phrases, count);
+
+        logger.info("[$id] call high priority phrases filters")
+        for (entry in firstFiltersPhrasesMap) {
+            logger.info("call filter: '${entry.key}', input phrases=${phrases.contentToString()}")
+            phrases = entry.value(phrases, count);
+            logger.info("result phrases=${phrases.contentToString()}")
         }
-        for (value in lastFiltersPhrasesMap.values) {
-            phrases = value(phrases, count);
+        logger.info("[$id] call low priority phrases filters")
+        for (entry in lastFiltersPhrasesMap) {
+            logger.info("call filter: '${entry.key}', input phrases=${phrases.contentToString()}")
+            phrases = entry.value(phrases, count);
+            logger.info("result phrases=${phrases.contentToString()}")
         }
         val phrase = phraseChooser.choose(phrases)
         phrasePrinter.printTextDialog(phrase, answers)
         val res =  answerChooser.chooseAnswer(answers)
-        logger.info("[$id]<< body Filtered  Phrase: output = $res")
+        logger.info("[$id]<< body Filtered Phrase: output = $res")
         return res;
     }
 
