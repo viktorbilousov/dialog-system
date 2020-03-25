@@ -14,6 +14,10 @@ open class FilteredPhrase : Phrase {
     }
 
     private var count = 0;
+    protected fun resetCount(){
+        logger.info("[$id] count reset")
+        count = 0
+    }
 
     private val firstFiltersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
     private val lastFiltersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()

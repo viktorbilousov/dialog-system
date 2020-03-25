@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'viktor.project'
-version '0.9.3'
+version '0.9.3.1'
 
 sourceCompatibility = 1.8
 
