@@ -3,9 +3,8 @@ package models.items.phrase
 import models.Answer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tools.AnswersTool
 
-open class FilteredPhrase : Phrase {
+open class FilteredPhrase : SimplePhrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
     constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
 
@@ -13,11 +12,6 @@ open class FilteredPhrase : Phrase {
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
     }
 
-    private var count = 0;
-    protected fun resetCount(){
-        logger.info("[$id] count reset")
-        count = 0
-    }
 
     private val firstFiltersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
     private val lastFiltersAnswerMap = LinkedHashMap< String ,(Array<Answer>, Int) -> Array<Answer> >()
@@ -56,13 +50,10 @@ open class FilteredPhrase : Phrase {
         lastFiltersAnswerMap.remove(name);
     }
 
-
-
-    override fun body(inputAnswer: Answer): Answer {
-        logger.info("[$id]>> body Filtered Phrase: input = $inputAnswer, count = ${count+1}")
-        count++;
-        var answers = AnswersTool.copyArrayOrAnswers(this.answers)
-        var phrases = this.phrases.clone();
+    override fun filter(inputAnswers: Array<Answer>, inputPhrases: Array<String>): Phrase.FilterResult {
+        logger.info("[$id]>> body Filtered Phrase: count = ${count+1}")
+        var answers = inputAnswers
+        var phrases= inputPhrases
         logger.info("[$id] call high priority answers filters")
         for (entry in firstFiltersAnswerMap) {
             logger.info("call filter: '${entry.key}', input answer  ${answers.contentToString()}")
@@ -88,11 +79,8 @@ open class FilteredPhrase : Phrase {
             phrases = entry.value(phrases, count);
             logger.info("result phrases=${phrases.contentToString()}")
         }
-        val phrase = phraseChooser.choose(phrases)
-        phrasePrinter.printTextDialog(phrase, answers)
-        val res =  answerChooser.chooseAnswer(answers)
-        logger.info("[$id]<< body Filtered Phrase: output = $res")
-        return res;
+
+        return Phrase.FilterResult(answers, phrases)
     }
 
     enum class Order{

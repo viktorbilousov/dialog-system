@@ -6,11 +6,10 @@ import com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter
 import models.Answer
 import models.AnswerType
 import models.Indexable
-import models.items.DialogItem
+import models.items.ADialogItem
 import models.router.Router
 import models.items.dialog.Dialog
 import models.items.phrase.SimplePhrase
-import java.io.FileOutputStream
 import java.util.HashMap
 
 
@@ -38,7 +37,7 @@ class DialogSysMain {
             val writer = GraphMLWriter(mainGraph)
 
 
-            val itemsList = ArrayList<DialogItem>();
+            val itemsList = ArrayList<ADialogItem>();
             val phrase1 = SimplePhrase(
                 "phrase.1",
                 "im the first phrase",
@@ -117,7 +116,7 @@ class DialogSysMain {
 
             val routerMain = Router("router", mainGraph, itemsMap, "phrase.1");
             val dialog = Dialog("dialog", routerMain);
-            dialog.run(Answer("start", "Start", AnswerType.ENTER));
+            dialog.run();
 
 
 

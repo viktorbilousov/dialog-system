@@ -26,6 +26,10 @@ import com.beust.klaxon.Json
          public fun exit() : Answer{
              return Answer("exit", "", AnswerType.EXIT)
          }
+
+         public fun copy(answer: Answer) : Answer{
+             return Answer(answer.id, answer.text+"", answer.type)
+         }
      }
 
      constructor(id: String, text: String) {

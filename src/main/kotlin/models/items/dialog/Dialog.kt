@@ -1,13 +1,12 @@
 package models.items.dialog
 import models.Answer;
 import models.AnswerType
-import models.items.DialogItem
+import models.items.ADialogItem
 import models.router.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 
-class Dialog : DialogItem {
+class Dialog : ADialogItem {
 
     companion object{
         private val logger = LoggerFactory.getLogger(this::class.java) as Logger
@@ -15,7 +14,7 @@ class Dialog : DialogItem {
     public val router: Router
 
     override val id: String
-    private var currentItem : DialogItem? = null
+    private var currentItem : ADialogItem? = null
 
     override val answers: Array<Answer>
         get() {
@@ -39,15 +38,15 @@ class Dialog : DialogItem {
         this.router = router;
     }
 
-    override fun body(inputAnswer: Answer): Answer {
+    override fun body(): Answer {
         logger.info("[DIALOG] [$id] >> body")
         if(currentItem == null) {
             currentItem = router.startPoint
         };
-        var answer = inputAnswer;
+        var answer = Answer.empty()
         while (true) {
             logger.info("[$id] run item: ${currentItem!!.id} ")
-            answer =  currentItem!!.run(answer)
+            answer =  currentItem!!.run()
             logger.info("[$id] answer is $answer")
             if(answer.type == AnswerType.EXIT || answer.type == AnswerType.ENTER){
                 logger.info("[$id] << body DIALOG return ${answer}")
@@ -57,7 +56,7 @@ class Dialog : DialogItem {
             }
         }
     }
-    public fun addItem(item: DialogItem){
+    public fun addItem(item: ADialogItem){
         router.addItem(item);
     }
 
@@ -66,7 +65,7 @@ class Dialog : DialogItem {
         val item = router.goTo(id) ?: return null;
         logger.info("[DIALOG] [$id] << startFrom")
         currentItem = item;
-        return run(inputAnswer);
+        return run();
     }
 
     public fun containsItem(id: String) : Boolean{
