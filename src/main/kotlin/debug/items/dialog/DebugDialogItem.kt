@@ -1,5 +1,6 @@
-package debug.items.phrase
+package debug.items.dialog
 
+import debug.items.ADebugDialogItem
 import models.Answer
 import models.items.ADialogItem
 import models.items.DialogItem

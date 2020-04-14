@@ -4,7 +4,7 @@ import models.Answer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-open class FilteredPhrase : SimplePhrase {
+open class FilteredPhrase : APhrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
     constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
 
@@ -50,7 +50,7 @@ open class FilteredPhrase : SimplePhrase {
         lastFiltersAnswerMap.remove(name);
     }
 
-    override fun filter(inputAnswers: Array<Answer>, inputPhrases: Array<String>): Phrase.FilterResult {
+    override fun filter(inputAnswers: Array<Answer>, inputPhrases: Array<String>): FilterResult {
         logger.info("[$id]>> body Filtered Phrase: count = ${count+1}")
         var answers = inputAnswers
         var phrases= inputPhrases
@@ -80,7 +80,7 @@ open class FilteredPhrase : SimplePhrase {
             logger.info("result phrases=${phrases.contentToString()}")
         }
 
-        return Phrase.FilterResult(answers, phrases)
+        return FilterResult(answers, phrases)
     }
 
     enum class Order{

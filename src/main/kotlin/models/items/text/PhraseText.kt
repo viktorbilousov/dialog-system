@@ -44,6 +44,6 @@ class PhraseText: Indexable {
     }
 
     override fun toString(): String {
-        return "{phrase text: id=$id, phrases=${text.contentToString()}, answers=${answers.contentToString()}}"
+        return "{phrase text: class=${this.clazz}, id=$id, phrases=${text.contentToString()}, answers=${answers.contentToString()}}"
     }
 }

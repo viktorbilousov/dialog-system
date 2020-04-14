@@ -5,7 +5,7 @@ import com.tinkerpop.blueprints.Vertex
 import models.Answer
 import models.AnswerType
 import models.Indexable
-import models.items.ADialogItem
+import models.items.DialogItem
 import models.router.Router
 import java.lang.IllegalArgumentException
 
@@ -20,7 +20,7 @@ class RouterTester {
 
     class RouterTestClass(private val router : Router){
         private val graph  = router.graph
-        private val items : HashMap<String, ADialogItem>
+        private val items : HashMap<String, DialogItem>
         private val vertexMap = HashMap<String, Vertex>()
         init {
             if(router.items == null ) throw IllegalAccessException("items list is null!")

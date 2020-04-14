@@ -1,10 +1,10 @@
 package debug.items.phrase
 
+import debug.items.ADebugDialogItem
 import models.Answer
 import models.items.phrase.*
-import tools.AnswersTool
 
-class DebugPhrase(_phrase: SimplePhrase) : ADebugDialogItem(), Phrase {
+open class DebugPhrase(_phrase: SimplePhrase) : ADebugDialogItem(), Phrase {
 
     public val phrase = _phrase
 
@@ -40,13 +40,13 @@ class DebugPhrase(_phrase: SimplePhrase) : ADebugDialogItem(), Phrase {
     override val body: () -> Answer = { _phrase.body() }
 
 
-    public var filterBegin: (inputAnswers: Array<Answer>, inputPhrases: Array<String>) -> Phrase.FilterResult =
+    public var filterBegin: (inputAnswers: Array<Answer>, inputPhrases: Array<String>) -> APhrase.FilterResult =
         { a, p ->
-            Phrase.FilterResult(a, p)
+            APhrase.FilterResult(a, p)
         }
 
-    public var filterEnd: (inputAnswers: Array<Answer>, inputPhrases: Array<String>) -> Phrase.FilterResult = { a, p ->
-        Phrase.FilterResult(a, p)
+    public var filterEnd: (inputAnswers: Array<Answer>, inputPhrases: Array<String>) -> APhrase.FilterResult = { a, p ->
+        APhrase.FilterResult(a, p)
     }
 
     public fun updatePhraseChooser(lambda: (chooser: PhraseChooser) -> PhraseChooser) {
@@ -61,7 +61,7 @@ class DebugPhrase(_phrase: SimplePhrase) : ADebugDialogItem(), Phrase {
         phrase.phrasePrinter = lambda(phrase.phrasePrinter)
     }
 
-    override fun filter(inputAnswers: Array<Answer>, inputPhrases: Array<String>): Phrase.FilterResult {
+    override fun filter(inputAnswers: Array<Answer>, inputPhrases: Array<String>): APhrase.FilterResult {
         var res = filterBegin(inputAnswers, inputPhrases)
         res = phrase.filter(res.answers, res.phrases)
         return filterEnd(res.answers, res.phrases)

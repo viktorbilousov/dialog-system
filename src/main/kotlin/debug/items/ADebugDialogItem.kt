@@ -1,11 +1,8 @@
-package debug.items.phrase
+package debug.items
 
 import models.Answer
-import models.items.ADialogItem
 import models.items.DialogItem
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import java.lang.IllegalStateException
 
 
 abstract class ADebugDialogItem: DialogItem {
@@ -21,13 +18,21 @@ abstract class ADebugDialogItem: DialogItem {
 
 
     override fun run(): Answer {
-        init(this)
-        before()
-        beforeBodyRun(this)
-        var res = body()
-        res = afterBodyRun(res, this)
-        after(res);
-        res = exit(res, this)
-        return res
+        try {
+            init(this)
+            before()
+            beforeBodyRun(this)
+            var res = body()
+            res = afterBodyRun(res, this)
+            after(res);
+            res = exit(res, this)
+            return res
+        }catch (e: IllegalStateException){
+            if(e.message == "need restart") return run();
+            throw e;
+        }
+    }
+    fun restart(): Answer{
+        throw IllegalStateException("need restart")
     }
 }

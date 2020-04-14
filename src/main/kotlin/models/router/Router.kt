@@ -6,7 +6,7 @@ import models.Indexable;
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import models.Answer
-import models.items.ADialogItem
+import models.items.DialogItem
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
@@ -17,7 +17,7 @@ class Router : Indexable {
         private val logger = LoggerFactory.getLogger(Router::class.java) as Logger
     }
 
-    private var currentPoint: ADialogItem? = null
+    private var currentPoint: DialogItem? = null
 
 
     @Json(name = "id")
@@ -27,7 +27,7 @@ class Router : Indexable {
     public var isResetToStart = false
 
     @Json(ignored = true)
-    public var items : HashMap<String, ADialogItem>? = null
+    public var items : HashMap<String, DialogItem>? = null
     set(value) {
         if(value == null) {
             throw IllegalArgumentException("items can not set items as null")
@@ -46,7 +46,7 @@ class Router : Indexable {
         };
 
     @Json( ignored = true)
-    public val startPoint: ADialogItem
+    public val startPoint: DialogItem
         get() {
             if (startPointId == null) {
                 throw IllegalArgumentException("start point is null!")
@@ -65,13 +65,13 @@ class Router : Indexable {
         this.id = id
     }
 
-    constructor(id: String, graph: Graph, items: HashMap<String, ADialogItem>?) {
+    constructor(id: String, graph: Graph, items: HashMap<String, DialogItem>?) {
         this.graph = graph
         this.id = id
         this.items = items
     }
 
-    constructor(id: String, graph: Graph, items: HashMap<String, ADialogItem>?, startPointId: String) {
+    constructor(id: String, graph: Graph, items: HashMap<String, DialogItem>?, startPointId: String) {
         this.graph = graph
         this.id = id
         this.items = items
@@ -81,7 +81,7 @@ class Router : Indexable {
     constructor(
         id: String,
         graph: Graph,
-        items: HashMap<String, ADialogItem>?,
+        items: HashMap<String, DialogItem>?,
         startPointId: String,
         isResetToStart: Boolean
     ) : this(id, graph, items, startPointId) {
@@ -89,7 +89,7 @@ class Router : Indexable {
     }
 
 
-    public fun getNext(answer: Answer): ADialogItem {
+    public fun getNext(answer: Answer): DialogItem {
         logger.info("[$id] << intput: $answer")
         val res = getItem(answer.id)
         if (currentPoint != null && !isConnected( currentPoint!!.id, res.id)) {
@@ -101,7 +101,7 @@ class Router : Indexable {
         return res;
     }
 
-    public fun goTo(id: String) : ADialogItem?{
+    public fun goTo(id: String) : DialogItem?{
         logger.info("[$this.id] << goTo: $id")
         if(items == null){
             throw IllegalAccessException("Item is null!")
@@ -117,7 +117,7 @@ class Router : Indexable {
         return res;
     }
 
-    private fun getItem(id: String): ADialogItem {
+    private fun getItem(id: String): DialogItem {
         logger.info("[${this.id}] >> get: $id")
         if(items == null){
             logger.error("Items is null!")
@@ -135,7 +135,7 @@ class Router : Indexable {
         return items!![id]!!
     }
 
-    public fun addItem(item: ADialogItem) {
+    public fun addItem(item: DialogItem) {
         logger.info("[${this.id} >> addItem: $item")
 
         if(items == null){

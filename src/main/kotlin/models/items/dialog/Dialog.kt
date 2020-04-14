@@ -2,6 +2,7 @@ package models.items.dialog
 import models.Answer;
 import models.AnswerType
 import models.items.ADialogItem
+import models.items.DialogItem
 import models.router.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,7 +15,7 @@ class Dialog : ADialogItem {
     public val router: Router
 
     override val id: String
-    private var currentItem : ADialogItem? = null
+    private var currentItem : DialogItem? = null
 
     override val answers: Array<Answer>
         get() {
@@ -56,11 +57,11 @@ class Dialog : ADialogItem {
             }
         }
     }
-    public fun addItem(item: ADialogItem){
+    public fun addItem(item: DialogItem){
         router.addItem(item);
     }
 
-    public fun startFrom(id: String, inputAnswer: Answer) : Answer? {
+    public fun startFrom(id: String) : Answer? {
         logger.info("[DIALOG] [$id] >> startFrom")
         val item = router.goTo(id) ?: return null;
         logger.info("[DIALOG] [$id] << startFrom")
