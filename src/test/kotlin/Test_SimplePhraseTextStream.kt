@@ -12,7 +12,7 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 import java.lang.IllegalArgumentException
 
-class Test_PhraseTextStream {
+class Test_SimplePhraseTextStream {
 
     @Test
     fun readManyFromFile() {

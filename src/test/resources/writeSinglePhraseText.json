@@ -1,1 +1,0 @@
-{"answers" : [{"answ_id" : "answer1", "text" : "answer text 1", "type" : "SIMPLE"}, {"answ_id" : "answer2", "text" : "answer text 2", "type" : "ENTER"}, {"answ_id" : "answer3", "text" : "answer text 2", "type" : "EXIT"}], "class" : "models.items.phrase.SimplePhrase", "id" : "test_id", "texts" : ["text1", "text2", "text3"]}

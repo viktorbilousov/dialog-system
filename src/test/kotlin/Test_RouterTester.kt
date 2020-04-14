@@ -3,7 +3,9 @@ import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import models.Answer
 import models.AnswerType
+import models.Indexable
 import models.items.DialogItem
+
 import models.router.Router
 import models.items.phrase.EmptyPhrase
 import models.items.phrase.SimplePhrase
@@ -18,7 +20,7 @@ class Test_RouterTester {
     @Test
     fun isGraphRelated_good(){
         val graph: Graph = createRelatedTestGraph();
-        val items = hashMapOf<String, DialogItem>( Pair("id",EmptyPhrase("id") as DialogItem))
+        val items = hashMapOf( Pair("id",EmptyPhrase("id") as DialogItem))
         val router = Router("id", graph, items)
         try{
             RouterTester.test(router).isGraphRelated()
@@ -31,7 +33,7 @@ class Test_RouterTester {
     @Test
      fun isGraphRelated_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = hashMapOf<String, DialogItem>( Pair("id",EmptyPhrase("id") as DialogItem))
+        val items = hashMapOf<String, DialogItem>( Pair("id", EmptyPhrase("id") as DialogItem))
         val router = Router("id", graph, items)
         assertThrows<IllegalAccessException> {  RouterTester.test(router).isGraphRelated()}
 
@@ -186,7 +188,7 @@ class Test_RouterTester {
     }
 
 
-    private fun createMapWithSimplePhrase(maxId: Int): HashMap<String,DialogItem>{
+    private fun createMapWithSimplePhrase(maxId: Int): HashMap<String, DialogItem>{
         val list = hashMapOf<String, DialogItem>();
         for( i in 1..maxId){
             list[i.toString()] = EmptyPhrase(i.toString()) as DialogItem
@@ -195,7 +197,7 @@ class Test_RouterTester {
     }
 
 
-    private fun createItemsListToRelatedGraph(): HashMap<String,DialogItem>{
+    private fun createItemsListToRelatedGraph(): HashMap<String, DialogItem>{
         val a = hashMapOf<Int, PhraseText>();
 
         a[1] = PhraseText("1", "text 1 ", arrayOf(Answer("2", "answ 1")))
@@ -211,12 +213,10 @@ class Test_RouterTester {
         a[11] = PhraseText("11", "text 11 ", arrayOf(Answer("2", "answ 11")))
 
 
-
         return a.values.stream()
-            .map{ SimplePhrase(it.id, it.text[0], it.answers)}.toList().associateBy(
-                keySelector = { it.id },
-                valueTransform = { it as DialogItem }
-            ) as HashMap<String, DialogItem>
+            .map{SimplePhrase(it.id, it.text[0], it.answers) }
+            .toList().associate { Pair(it.id, it ) } as HashMap<String, DialogItem>
+
 
         /*
 
@@ -238,6 +238,7 @@ class Test_RouterTester {
         val v = hashMapOf<Int, Vertex>()
         for (i in 1 .. 11) {
             v[i] =  graph.addVertex(i.toString())
+            v[i]!!.setProperty(Indexable.ID_NAME, i.toString())
         }
 
         graph.addEdge(null, v[11], v[2],"11->2")
@@ -259,6 +260,7 @@ class Test_RouterTester {
         val v = hashMapOf<Int, Vertex>()
         for (i in 1 .. 11) {
             v[i] =  graph.addVertex(i.toString())
+            v[i]!!.setProperty(Indexable.ID_NAME, i.toString())
         }
 
         graph.addEdge(null, v[11], v[2],"11->2")

@@ -1,4 +1,3 @@
-import com.beust.klaxon.Klaxon
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileReader
 
 //TODO finalise tests
 class Test_RoterStream{
