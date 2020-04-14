@@ -2,7 +2,7 @@ import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import models.Indexable
-import models.items.DialogItem
+import models.items.ADialogItem
 import models.items.phrase.EmptyPhrase
 import models.router.Router
 import models.router.RouterStream
@@ -97,8 +97,8 @@ class Test_RoterStream{
         )
     }
 
-    private fun createTestItems(): HashMap<String, DialogItem>{
-        val items = hashMapOf<String, DialogItem>()
+    private fun createTestItems(): HashMap<String, ADialogItem>{
+        val items = hashMapOf<String, ADialogItem>()
         for(i in 1 .. 10){
             items["$i"] = EmptyPhrase("$i")
         }
