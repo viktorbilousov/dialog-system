@@ -11,10 +11,10 @@ import org.slf4j.LoggerFactory
 abstract class ADialog : ADialogItem {
 
     companion object{
-        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+        private val logger = LoggerFactory.getLogger(ADialog::class.java) as Logger
 
-        public fun <T: ADialog> createFrom(dialog: ADialog): T{
-            dialog.javaClass.constructors.forEach {
+        public inline fun <reified T: ADialog> createFrom(dialog: ADialog): T{
+            T::class.java.constructors.forEach {
                 if (it.parameterCount == 2
                     && it.parameters[0].type == String::class.java
                     && it.parameters[1].type == Router::class.java
@@ -39,6 +39,8 @@ abstract class ADialog : ADialogItem {
         this.id = id;
         this.router = router;
     }
+
+    constructor(dialog: ADialog): this(dialog.id, dialog.router)
 
     override val answers: Array<Answer>
         get() {

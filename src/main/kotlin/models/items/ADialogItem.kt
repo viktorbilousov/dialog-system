@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 abstract class ADialogItem : Indexable{
 
     companion object{
-        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+        private val logger = LoggerFactory.getLogger(ADialogItem::class.java) as Logger
     }
 
     abstract var runner: DialogItemRunner
@@ -25,6 +25,17 @@ abstract class ADialogItem : Indexable{
         val res = runner.runItem(this)
         logger.info("[${id}] << run")
         return res;
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null ) return false;
+        else if (other !is ADialogItem) return false
+
+        return other.id == id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode() * 32
     }
 
 }

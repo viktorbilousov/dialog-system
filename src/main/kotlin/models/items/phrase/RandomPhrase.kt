@@ -7,8 +7,9 @@ import org.slf4j.LoggerFactory
 
 class RandomPhrase(id: String, phrases: Array<String>,  answers: Array<Answer> ) : FilteredPhrase(id, phrases, answers) {
 
+
     companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+        private val logger = LoggerFactory.getLogger(RandomPhrase::class.java) as Logger
     }
 
     init {

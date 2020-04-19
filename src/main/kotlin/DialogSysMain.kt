@@ -9,10 +9,10 @@ class DialogSysMain {
     companion object {
         @JvmStatic
         public fun main(args: Array<String>) {
-
             val simple = SimplePhrase("test", "hello world", arrayOf(Answer("answer 1", "annswer1")))
-            val filtered =  APhrase.createFrom<FilteredPhrase>(simple);
-
+            val filtered =  APhrase.convertTo<FilteredPhrase>(simple)
+            println(simple)
+            println(filtered)
             RunnerConfigurator.setDebugRunner(filtered)
 
         }

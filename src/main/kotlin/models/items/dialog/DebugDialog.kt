@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
  public open class DebugDialog(id: String, router: Router) : ADialog(id, router) {
 
     companion object{
-        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+        private val logger = LoggerFactory.getLogger(DebugDialog::class.java) as Logger
 
     }
 
@@ -45,12 +45,12 @@ import org.slf4j.LoggerFactory
 
      public var transformCurrentItem : (ADialogItem) -> ADialogItem = {it}
      public var transformIfCurrentItemIsPhrase : (APhrase) -> APhrase = {it}
-     public fun <T : APhrase> transformIfCurrentItemIsPhrase()  {
+     public inline fun <reified T : APhrase> transformIfCurrentItemIsPhrase()  {
          transformIfCurrentItemIsPhrase = {
-             APhrase.createFrom<T>(it)
+             APhrase.convertTo<T>(it)
          }
      }
-     public fun <T: ADialog> transformIfCurrentItemIsDialog() {
+     public inline fun <reified T: ADialog> transformIfCurrentItemIsDialog() {
          transformIfCurrentItemIsDialog = {
              ADialog.createFrom<T>(it)
          }

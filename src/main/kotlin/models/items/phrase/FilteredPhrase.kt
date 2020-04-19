@@ -8,6 +8,7 @@ open class FilteredPhrase : AFilteredPhrase{
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
     constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
 
+
     final override fun body(): Answer {
         incrementCounter()
         val answers = AnswersTool.copyArrayOrAnswers(this.answers)

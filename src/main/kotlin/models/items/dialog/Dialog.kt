@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
  open class Dialog(id: String, router: Router) : ADialog(id, router) {
 
     companion object{
-        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+        private val logger = LoggerFactory.getLogger(Dialog::class.java) as Logger
     }
 
     override fun body(): Answer {
