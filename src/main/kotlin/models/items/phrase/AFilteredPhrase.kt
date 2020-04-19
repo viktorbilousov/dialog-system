@@ -9,8 +9,26 @@ abstract class AFilteredPhrase : APhrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
     constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
 
+    override fun initFrom(source: APhrase) {
+        super.initFrom(source)
+        if(source.javaClass !is AFilteredPhrase) return;
+
+        source as AFilteredPhrase;
+
+        this.firstFiltersAnswerMap.clear();
+        this.firstFiltersPhrasesMap.clear()
+        this.lastFiltersAnswerMap.clear()
+        this.lastFiltersPhrasesMap.clear();
+
+        this.firstFiltersAnswerMap.putAll(source.firstFiltersAnswerMap)
+        this.firstFiltersPhrasesMap.putAll(source.firstFiltersPhrasesMap)
+        this.lastFiltersPhrasesMap.putAll(source.lastFiltersPhrasesMap)
+        this.lastFiltersAnswerMap.putAll(source.lastFiltersAnswerMap)
+
+    }
+
     companion object{
-        private val logger = LoggerFactory.getLogger(this::class.java) as Logger
+        private val logger = LoggerFactory.getLogger(AFilteredPhrase::class.java) as Logger
 
         public fun toDebugFilteredPhrase(filteredPhrase: FilteredPhrase): DebugFilteredPhrase{
             return DebugFilteredPhrase(filteredPhrase)

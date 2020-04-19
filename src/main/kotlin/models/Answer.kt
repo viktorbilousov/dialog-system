@@ -45,4 +45,15 @@ import com.beust.klaxon.Json
      override fun toString(): String {
          return "{id:$id, text:'$text', type=$type}"
      }
+
+     override fun equals(other: Any?): Boolean {
+         if (other == null ) return false;
+         else if (other !is Answer) return false
+
+         return other.id == id
+     }
+
+     override fun hashCode(): Int {
+         return id.hashCode() * 32
+     }
  }
