@@ -2,27 +2,31 @@ package models.items.dialog
 import models.Answer;
 import models.AnswerType
 import models.items.ADialogItem
+import models.items.phrase.APhrase
 import models.items.runner.DefaultRunner
 import models.items.runner.DialogItemRunner
 import models.router.Router
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 
 abstract class ADialog : ADialogItem {
 
     companion object{
         private val logger = LoggerFactory.getLogger(ADialog::class.java) as Logger
 
-        public inline fun <reified T: ADialog> createFrom(dialog: ADialog): T{
-            T::class.java.constructors.forEach {
-                if (it.parameterCount == 2
-                    && it.parameters[0].type == String::class.java
-                    && it.parameters[1].type == Router::class.java
-                ) {
-                    return it.newInstance(dialog.id, dialog.router) as T;
-                }
+        public inline fun <reified T : ADialog> convertTo(dialog: ADialog): T{
+            try {
+                val res = T::class.java
+                    .getConstructor(String::class.java, Router::class.java)
+                    .newInstance(dialog.id, dialog.router) as T;
+                res.initFrom(dialog);
+                return res;
+            }catch (e: Exception){
+                val logger = LoggerFactory.getLogger(ADialog::class.java) as Logger
+                logger.error("class not has constructor (String::class.java, Router::class.java)", e)
+                throw InstantiationError("class not has constructor (String::class.java, Router::class.java)")
             }
-            throw InstantiationError("class not has the constructor (id: String, router: Router)")
         }
     }
 

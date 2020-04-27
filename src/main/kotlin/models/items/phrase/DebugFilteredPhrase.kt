@@ -5,27 +5,14 @@ import models.items.runner.DebugRunner
 import tools.AnswersTool
 import java.lang.invoke.SerializedLambda
 
-open class DebugFilteredPhrase : AFilteredPhrase{
+open class DebugFilteredPhrase(id: String, phrases: Array<String>,  answers: Array<Answer>): AFilteredPhrase(id, phrases, answers){
 
-    public constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
-    public constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
-    constructor(filteredPhrase: FilteredPhrase) : super(filteredPhrase.id, filteredPhrase.phrases, filteredPhrase.answers)
+    //constructor(id: String, phrase: String,  answers: Array<Answer>) : this(id, arrayOf(phrase), answers)
+   // constructor(filteredPhrase: FilteredPhrase) : this(filteredPhrase.id, filteredPhrase.phrases, filteredPhrase.answers)
 
      init {
          this.runner = DebugRunner();
      }
-
-    public fun updatePrinter(lambda: (PhrasePrinter) -> PhrasePrinter){
-        this.phrasePrinter = lambda(this.phrasePrinter);
-    }
-
-    public fun updateAnswerChooser(lambda: (AnswerChooser) -> AnswerChooser){
-        this.answerChooser = lambda(this.answerChooser);
-    }
-
-    public fun updatePhraseChooser(lambda: (PhraseChooser) -> PhraseChooser){
-        this.phraseChooser= lambda(this.phraseChooser);
-    }
 
     final override fun body(): Answer {
         incrementCounter()

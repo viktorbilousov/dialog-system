@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory
      }
      public inline fun <reified T: ADialog> transformIfCurrentItemIsDialog() {
          transformIfCurrentItemIsDialog = {
-             ADialog.createFrom<T>(it)
+             ADialog.convertTo<T>(it)
          }
      }
      public var transformIfCurrentItemIsDialog : (ADialog) -> ADialog = {it}

@@ -2,6 +2,7 @@ package models.items
 
 import models.Answer
 import models.Indexable
+import models.items.phrase.APhrase
 import models.items.runner.DialogItemRunner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,6 +20,11 @@ abstract class ADialogItem : Indexable{
     public var after: (outputAnswer: Answer) -> Unit = {}
 
     abstract fun body(): Answer
+
+    protected open fun initFrom(source: ADialogItem){
+        this.before = source.before
+        this.after = source.after
+    }
 
     fun run(): Answer{
         logger.info("[${id}] >> run")

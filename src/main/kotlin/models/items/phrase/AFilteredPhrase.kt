@@ -1,6 +1,7 @@
 package models.items.phrase
 
 import models.Answer
+import models.items.ADialogItem
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tools.AnswersTool
@@ -9,11 +10,9 @@ abstract class AFilteredPhrase : APhrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
     constructor(id: String, phrase: String,  answers: Array<Answer>) : super(id, arrayOf(phrase), answers)
 
-    override fun initFrom(source: APhrase) {
+    override fun initFrom(source: ADialogItem) {
         super.initFrom(source)
-        if(source.javaClass !is AFilteredPhrase) return;
-
-        source as AFilteredPhrase;
+        if(source !is AFilteredPhrase) return;
 
         this.firstFiltersAnswerMap.clear();
         this.firstFiltersPhrasesMap.clear()
@@ -29,13 +28,6 @@ abstract class AFilteredPhrase : APhrase {
 
     companion object{
         private val logger = LoggerFactory.getLogger(AFilteredPhrase::class.java) as Logger
-
-        public fun toDebugFilteredPhrase(filteredPhrase: FilteredPhrase): DebugFilteredPhrase{
-            return DebugFilteredPhrase(filteredPhrase)
-        }
-        public fun toFilteredPhrase(filteredPhrase: DebugFilteredPhrase): FilteredPhrase{
-            return FilteredPhrase(filteredPhrase.id, filteredPhrase.phrases, filteredPhrase.answers)
-        }
     }
 
     abstract override fun body(): Answer
@@ -78,7 +70,7 @@ abstract class AFilteredPhrase : APhrase {
     }
 
     protected fun filter(inputAnswers: Array<Answer>, inputPhrases: Array<String>): FilterResult {
-        logger.info("[$id]>> body Filtered Phrase: count = ${count+1}")
+        logger.info("[$id]>> body Filtered Phrase: count = $count")
         var answers = inputAnswers
         var phrases= inputPhrases
         logger.info("[$id] call high priority answers filters")
@@ -112,6 +104,22 @@ abstract class AFilteredPhrase : APhrase {
 
     enum class Order{
         First, Last
+    }
+
+
+
+
+
+
+
+    override fun toString(): String {
+
+
+        return "{${this.javaClass.simpleName}: id=$id, phrases=${texts}, " +
+                "\nfirstFiltersAnswerMap = {${firstFiltersAnswerMap.map { "${it.key}:${it.value.javaClass.simpleName}" }.joinToString()}} " +
+                "\nlastFiltersAnswerMap  = {${lastFiltersAnswerMap.map { "${it.key}:${it.value.javaClass.simpleName}" }.joinToString()}} " +
+                "\nfirstFiltersPhrasesMap = {${firstFiltersPhrasesMap.map { "${it.key}:${it.value.javaClass.simpleName}" }.joinToString()}} " +
+                "\nlastFiltersPhrasesMap = {${lastFiltersPhrasesMap.map { "${it.key}:${it.value.javaClass.simpleName}" }.joinToString()}} "
     }
 
     data class FilterResult(val answers: Array<Answer>, val phrases: Array<String>)
