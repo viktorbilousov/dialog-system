@@ -1,10 +1,10 @@
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import models.Answer
-import models.AnswerType
-import models.items.text.PhraseText
-import models.items.text.PhraseTextStream
+import dialog.system.models.Answer
+import dialog.system.models.AnswerType
+import dialog.system.models.items.text.PhraseText
+import dialog.system.models.items.text.PhraseTextStream
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -50,22 +50,22 @@ class Test_SimplePhraseTextStream {
 
     @Test fun readMany_objectFile(){
         val pathToFile = "./src/test/resources/test_readSinglePhraseText.json"
-        assertThrows<IllegalArgumentException>{PhraseTextStream.readMany(pathToFile)}
+        assertThrows<IllegalArgumentException>{ PhraseTextStream.readMany(pathToFile)}
     }
 
     @Test fun readOne_arrayFile(){
         val pathToFile = "./src/test/resources/test_readMultiplyPhraseText.json"
-        assertThrows<IllegalArgumentException>{PhraseTextStream.readOne(pathToFile)}
+        assertThrows<IllegalArgumentException>{ PhraseTextStream.readOne(pathToFile)}
     }
 
     @Test fun readOne_badFile(){
         val pathToFile = "./src/test/resources/test_readSinglePhraseText_bad.json"
-        assertThrows<IllegalArgumentException>{PhraseTextStream.readOne(pathToFile)}
+        assertThrows<IllegalArgumentException>{ PhraseTextStream.readOne(pathToFile)}
     }
 
     @Test fun readMany_badFile(){
         val pathToFile = "./src/test/resources/test_readMultiplyPhraseText_bad.json"
-        assertThrows<IllegalArgumentException>{PhraseTextStream.readOne(pathToFile)}
+        assertThrows<IllegalArgumentException>{ PhraseTextStream.readOne(pathToFile)}
     }
 
     @Test
@@ -117,9 +117,21 @@ class Test_SimplePhraseTextStream {
         val expectedId = "test_id"
         val expectedTexts = arrayOf("text1", "text2", "text3");
         val expectedAnswers = arrayOf(
-            Answer("answer1", "answer text 1", AnswerType.SIMPLE),
-            Answer("answer2", "answer text 2", AnswerType.ENTER),
-            Answer("answer3", "answer text 2", AnswerType.EXIT)
+            Answer(
+                "answer1",
+                "answer text 1",
+                AnswerType.SIMPLE
+            ),
+            Answer(
+                "answer2",
+                "answer text 2",
+                AnswerType.ENTER
+            ),
+            Answer(
+                "answer3",
+                "answer text 2",
+                AnswerType.EXIT
+            )
         )
         val phrase = PhraseText(
             expectedId,

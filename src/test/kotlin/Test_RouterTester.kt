@@ -1,18 +1,18 @@
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
-import models.Answer
-import models.AnswerType
-import models.Indexable
-import models.items.ADialogItem
+import dialog.system.models.Answer
+import dialog.system.models.AnswerType
+import dialog.system.models.Indexable
+import dialog.system.models.items.ADialogItem
 
-import models.router.Router
-import models.items.phrase.EmptyPhrase
-import models.items.phrase.SimplePhrase
-import models.items.text.PhraseText
+import dialog.system.models.router.Router
+import dialog.system.models.items.phrase.EmptyPhrase
+import dialog.system.models.items.phrase.SimplePhrase
+import dialog.system.models.items.text.PhraseText
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import tools.RouterTester
+import dialog.system.tools.RouterTester
 import java.lang.IllegalArgumentException
 import kotlin.streams.toList
 
@@ -20,7 +20,9 @@ class Test_RouterTester {
     @Test
     fun isGraphRelated_good(){
         val graph: Graph = createRelatedTestGraph();
-        val items = hashMapOf( Pair("id",EmptyPhrase("id") as ADialogItem))
+        val items = hashMapOf( Pair("id",
+            EmptyPhrase("id") as ADialogItem
+        ))
         val router = Router("id", graph, items)
         try{
             RouterTester.test(router).isGraphRelated()
@@ -33,7 +35,10 @@ class Test_RouterTester {
     @Test
      fun isGraphRelated_bad(){
         val graph: Graph = createNotRelatedTestGraph();
-        val items = hashMapOf<String, ADialogItem>( Pair("id", EmptyPhrase("id") as ADialogItem))
+        val items = hashMapOf<String, ADialogItem>( Pair("id", EmptyPhrase(
+            "id"
+        ) as ADialogItem
+        ))
         val router = Router("id", graph, items)
         assertThrows<IllegalAccessException> {  RouterTester.test(router).isGraphRelated()}
 
@@ -80,7 +85,7 @@ class Test_RouterTester {
         val graph: Graph = createNotRelatedTestGraph();
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
-        assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
+        assertThrows<IllegalAccessException> { RouterTester.test(router).isAllVertexHasItems()}
     }
 
     @Test
@@ -88,7 +93,7 @@ class Test_RouterTester {
         val graph: Graph = TinkerGraph()
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
-        assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
+        assertThrows<IllegalAccessException> { RouterTester.test(router).isAllVertexHasItems()}
     }
 
     @Test
@@ -96,7 +101,7 @@ class Test_RouterTester {
         val graph: Graph = createNotRelatedTestGraph();
         val items = hashMapOf<String, ADialogItem>()
         val router = Router("id", graph, items);
-        assertThrows<IllegalAccessException> {RouterTester.test(router).isAllVertexHasItems()}
+        assertThrows<IllegalAccessException> { RouterTester.test(router).isAllVertexHasItems()}
     }
 
     @Test
@@ -119,7 +124,7 @@ class Test_RouterTester {
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         router.startPointId = "112445";
-        assertThrows<IllegalAccessException> {RouterTester.test(router).checkStartPoint()}
+        assertThrows<IllegalAccessException> { RouterTester.test(router).checkStartPoint()}
     }
 
     @Test
@@ -127,7 +132,7 @@ class Test_RouterTester {
         val graph: Graph = createNotRelatedTestGraph();
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
-        assertThrows<IllegalAccessException> {RouterTester.test(router).checkStartPoint()}
+        assertThrows<IllegalAccessException> { RouterTester.test(router).checkStartPoint()}
     }
 
     @Test
@@ -200,21 +205,86 @@ class Test_RouterTester {
     private fun createItemsListToRelatedGraph(): HashMap<String, ADialogItem>{
         val a = hashMapOf<Int, PhraseText>();
 
-        a[1] = PhraseText("1", "text 1 ", arrayOf(Answer("2", "answ 1")))
-        a[2] = PhraseText("2", "text 2 ", arrayOf(Answer("3", "answ 2.1"), Answer("4","answ 2.2" )))
-        a[3] = PhraseText("3", "text 3 ", arrayOf(Answer("5", "answ 3.1"), Answer("6", "answ 6.1")))
-        a[4] = PhraseText("4", "text 4 ", arrayOf(Answer("6", "answ 4.1"), Answer("7", "answ 4.2") ))
-        a[5] = PhraseText("5", "text 5 ", arrayOf(Answer("9", "answ 5")))
-        a[6] = PhraseText("6", "text 6 ", arrayOf(Answer("9", "answ 6")))
-        a[7] = PhraseText("7", "text 7 ", arrayOf(Answer("8", "answ 1")))
-        a[8] = PhraseText("8", "text 8 ", arrayOf(Answer("end 8", "answ 8", AnswerType.EXIT)))
-        a[9] = PhraseText("9", "text 9 ", arrayOf(Answer("10", "answ 9")))
-        a[10] = PhraseText("10", "text 10 ", arrayOf(Answer("edn 10", "answ 1", AnswerType.EXIT)))
-        a[11] = PhraseText("11", "text 11 ", arrayOf(Answer("2", "answ 11")))
+        a[1] = PhraseText(
+            "1",
+            "text 1 ",
+            arrayOf(Answer("2", "answ 1"))
+        )
+        a[2] = PhraseText(
+            "2",
+            "text 2 ",
+            arrayOf(
+                Answer("3", "answ 2.1"),
+                Answer("4", "answ 2.2")
+            )
+        )
+        a[3] = PhraseText(
+            "3",
+            "text 3 ",
+            arrayOf(
+                Answer("5", "answ 3.1"),
+                Answer("6", "answ 6.1")
+            )
+        )
+        a[4] = PhraseText(
+            "4",
+            "text 4 ",
+            arrayOf(
+                Answer("6", "answ 4.1"),
+                Answer("7", "answ 4.2")
+            )
+        )
+        a[5] = PhraseText(
+            "5",
+            "text 5 ",
+            arrayOf(Answer("9", "answ 5"))
+        )
+        a[6] = PhraseText(
+            "6",
+            "text 6 ",
+            arrayOf(Answer("9", "answ 6"))
+        )
+        a[7] = PhraseText(
+            "7",
+            "text 7 ",
+            arrayOf(Answer("8", "answ 1"))
+        )
+        a[8] = PhraseText(
+            "8",
+            "text 8 ",
+            arrayOf(
+                Answer(
+                    "end 8",
+                    "answ 8",
+                    AnswerType.EXIT
+                )
+            )
+        )
+        a[9] = PhraseText(
+            "9",
+            "text 9 ",
+            arrayOf(Answer("10", "answ 9"))
+        )
+        a[10] = PhraseText(
+            "10",
+            "text 10 ",
+            arrayOf(
+                Answer(
+                    "edn 10",
+                    "answ 1",
+                    AnswerType.EXIT
+                )
+            )
+        )
+        a[11] = PhraseText(
+            "11",
+            "text 11 ",
+            arrayOf(Answer("2", "answ 11"))
+        )
 
 
         return a.values.stream()
-            .map{SimplePhrase(it.id, it.text[0], it.answers) }
+            .map{ SimplePhrase(it.id, it.text[0], it.answers) }
             .toList().associate { Pair(it.id, it ) } as HashMap<String, ADialogItem>
 
 

@@ -1,11 +1,11 @@
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
-import models.Indexable
-import models.items.ADialogItem
-import models.items.phrase.EmptyPhrase
-import models.router.Router
-import models.router.RouterStream
+import dialog.system.models.Indexable
+import dialog.system.models.items.ADialogItem
+import dialog.system.models.items.phrase.EmptyPhrase
+import dialog.system.models.router.Router
+import dialog.system.models.router.RouterStream
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
@@ -29,45 +29,45 @@ class Test_RoterStream{
     @Test fun readManyFromFile_notFound() {
         val pathToFile = "./src/test/resources/routers/singleRouter_test123.json"
         val pathToGraphFolder = "./src/test/resources/graphs/test"
-        assertThrows<FileNotFoundException>{RouterStream.readMany(pathToFile, pathToGraphFolder)}
+        assertThrows<FileNotFoundException>{ RouterStream.readMany(pathToFile, pathToGraphFolder)}
     }
     @Test fun readOneFromFile_notFound()  {
         val pathToFile = "./src/test/resources/routers/singleRouter_test123.json"
         val pathToGraphFolder = "./src/test/resources/graphs/test"
-        assertThrows<FileNotFoundException>{RouterStream.readOne(pathToFile, pathToGraphFolder)}
+        assertThrows<FileNotFoundException>{ RouterStream.readOne(pathToFile, pathToGraphFolder)}
     }
     @Test fun readOneFromFile_notFound_routers()  {
         val pathToFile = "./src/test/resources/routers/singleRouter_test.json"
         val pathToGraphFolder = "./src/test/resources"
-        assertThrows<FileNotFoundException>{RouterStream.readOne(pathToFile, pathToGraphFolder)}
+        assertThrows<FileNotFoundException>{ RouterStream.readOne(pathToFile, pathToGraphFolder)}
     }
 
     @Test fun readManyFromFile_notFound_routers()  {
         val pathToFile = "./src/test/resources/routers/multiplyRouter_test.json"
         val pathToGraphFolder = "./src/test/resources"
-        assertThrows<FileNotFoundException>{RouterStream.readMany(pathToFile, pathToGraphFolder)}
+        assertThrows<FileNotFoundException>{ RouterStream.readMany(pathToFile, pathToGraphFolder)}
     }
 
     @Test fun readManyFromFile_badFile() {
         val pathToFile = "./src/test/resources/routers/singleRouter_test_bad.json"
         val pathToGraphFolder = "./src/test/resources/graphs/test"
-        assertThrows<IllegalArgumentException>{RouterStream.readMany(pathToFile, pathToGraphFolder)}
+        assertThrows<IllegalArgumentException>{ RouterStream.readMany(pathToFile, pathToGraphFolder)}
     }
     @Test fun readOneFromFile_badFile() {
         val pathToFile = "./src/test/resources/routers/multiplyRouter_test_bad.json"
         val pathToGraphFolder = "./src/test/resources/graphs/test"
-        assertThrows<IllegalArgumentException>{RouterStream.readOne(pathToFile, pathToGraphFolder)}
+        assertThrows<IllegalArgumentException>{ RouterStream.readOne(pathToFile, pathToGraphFolder)}
     }
 
     @Test fun readMany_objectFile(){
         val pathToFile = "./src/test/resources/routers/singleRouter_test.json"
         val pathToGraphFolder = "./src/test/resources/graphs/test"
-        assertThrows<IllegalArgumentException>{RouterStream.readMany(pathToFile, pathToGraphFolder)}
+        assertThrows<IllegalArgumentException>{ RouterStream.readMany(pathToFile, pathToGraphFolder)}
     }
     @Test fun readOne_arrayFile(){
         val pathToFile = "./src/test/resources/routers/multiplyRouter_test.json"
         val pathToGraphFolder = "./src/test/resources/graphs/test"
-        assertThrows<IllegalArgumentException>{RouterStream.readOne(pathToFile, pathToGraphFolder)}
+        assertThrows<IllegalArgumentException>{ RouterStream.readOne(pathToFile, pathToGraphFolder)}
     }
 
     @Test fun writeManyToFile(){
