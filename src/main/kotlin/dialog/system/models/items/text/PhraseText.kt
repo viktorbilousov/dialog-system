@@ -31,6 +31,20 @@ class PhraseText: Indexable {
         DEF_CLASS
     ) {}
 
+    constructor(id: String, text: Array<String>, answers: Array<Answer>, clazz: Class<*>)  {
+        this.id = id
+        this.text = text
+        this.answers = answers
+        this.clazz = clazz::class.java.name.toString()
+    }
+
+
+    constructor(id: String, text: String, answers: Array<Answer>, clazz: Class<*>)  {
+        this.id = id
+        this.text = arrayOf(text)
+        this.answers = answers
+        this.clazz = clazz::class.java.name.toString()
+    }
 
     constructor(id: String, text: Array<String>, answers: Array<Answer>, clazz: String)  {
         this.id = id

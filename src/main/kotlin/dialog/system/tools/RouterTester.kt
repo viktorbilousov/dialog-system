@@ -103,7 +103,9 @@ class RouterTester {
 
         @Throws(IllegalAccessException::class)
         public fun isGraphRelated()  : RouterTestClass {
-            val arr = bfs(graph.vertices.iterator().next().id as String);
+            val startPointVetex = findVertex(router.startPointId!!) ?:
+                throw IllegalArgumentException("router not contain start Point ${router.startPointId}")
+            val arr = bfs(startPointVetex.id as String);
             if(arr.size != graph.vertices.count()){
                val list = mutableListOf<String>()
                  graph.vertices.forEach { if(!arr.contains(it.getProperty(Indexable.ID_NAME) as String)) list.add(it.getProperty(
@@ -200,6 +202,13 @@ class RouterTester {
                 }
             }
             return passedVertexes.toTypedArray();
+        }
+
+        private fun findVertex(item_id: String) : Vertex?{
+            graph.vertices.forEach{
+                if(it.getProperty<String>(Indexable.ID_NAME) == item_id) return it
+            }
+            return null
         }
 
     }

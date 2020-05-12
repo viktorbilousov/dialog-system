@@ -4,7 +4,6 @@ import dialog.system.models.Answer
 import dialog.system.models.items.ADialogItem
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import dialog.system.tools.AnswersTool
 
 abstract class AFilteredPhrase : APhrase {
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>) : super(id, phrases, answers)
@@ -37,8 +36,22 @@ abstract class AFilteredPhrase : APhrase {
     private val firstFiltersPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
     private val lastFiltersPhrasesMap = LinkedHashMap< String ,(Array<String>, Int) -> Array<String> >()
 
-    public fun addAnswerFilter(name: String, filter: (Array<Answer>, Int) -> Array<Answer>){
-        addAnswerFilter(name, Order.First, filter)
+    private val firstResultAnswerFilterMap = LinkedHashMap< String, (Answer) -> Answer >()
+    private val lastResultAnswerFilterMap =  LinkedHashMap<String,  (Answer) -> Answer >()
+
+    public fun addAnswersFilter(name: String, filter: (Array<Answer>, Int) -> Array<Answer>){
+        addAnswersFilter(name, Order.First, filter)
+    }
+
+    public fun addResultAnswerFilter(name: String, filter: (Answer) -> Answer){
+        addResultAnswerFilter(name, Order.First, filter)
+    }
+
+    public fun addResultAnswerFilter(name: String, order: Order, filter: (Answer) -> Answer){
+        when(order){
+            Order.Last ->  lastResultAnswerFilterMap[name] = filter;
+            Order.First -> firstResultAnswerFilterMap[name] = filter;
+        }
     }
 
     public fun addPhrasesFilter(name: String, order: Order, filter: (Array<String>, Int) -> Array<String>){
@@ -48,7 +61,7 @@ abstract class AFilteredPhrase : APhrase {
         }
     }
 
-    public fun addAnswerFilter(name: String, order: Order, filter: (Array<Answer>, Int) -> Array<Answer>){
+    public fun addAnswersFilter(name: String, order: Order, filter: (Array<Answer>, Int) -> Array<Answer>){
         when(order){
             Order.Last ->  lastFiltersAnswerMap[name] = filter;
             Order.First -> firstFiltersAnswerMap[name] = filter;
@@ -104,6 +117,25 @@ abstract class AFilteredPhrase : APhrase {
         return FilterResult(answers, phrases)
     }
 
+    fun answerFilter(_answer: Answer): Answer{
+        var answer = _answer;
+        logger.info("[$id] -------- result answers filters --------")
+        logger.info("[$id] call high priority phrases filters")
+        for (entry in firstResultAnswerFilterMap) {
+            logger.info("call filter: '${entry.key}', input answer=${answer}")
+            answer = entry.value(answer);
+            logger.info("result answer=${answer}")
+        }
+        logger.info("[$id] call low priority phrases filters")
+        for (entry in lastResultAnswerFilterMap) {
+            logger.info("call filter: '${entry.key}', input answer=${answer}")
+            answer = entry.value(answer);
+            logger.info("result answer=${answer}")
+        }
+        return answer;
+    }
+
+
     enum class Order{
         First, Last
     }
@@ -123,6 +155,7 @@ abstract class AFilteredPhrase : APhrase {
                 "\nfirstFiltersPhrasesMap = {${firstFiltersPhrasesMap.map { "${it.key}:${it.value.javaClass.simpleName}" }.joinToString()}} " +
                 "\nlastFiltersPhrasesMap = {${lastFiltersPhrasesMap.map { "${it.key}:${it.value.javaClass.simpleName}" }.joinToString()}} "
     }
+
 
     data class FilterResult(val answers: Array<Answer>, val phrases: Array<String>)
 

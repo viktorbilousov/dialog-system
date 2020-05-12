@@ -18,6 +18,9 @@ open class FilteredPhrase : AFilteredPhrase {
 
         val phrase = phraseChooser.choose(bodyAnswer.phrases)
         phrasePrinter.printTextDialog(phrase, bodyAnswer.answers)
-        return answerChooser.chooseAnswer(bodyAnswer.answers)
+        val answer =  answerChooser.chooseAnswer(bodyAnswer.answers)
+
+        return  answerFilter(answer)
+
     }
 }

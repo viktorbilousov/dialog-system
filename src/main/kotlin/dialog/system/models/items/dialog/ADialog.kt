@@ -55,7 +55,7 @@ abstract class ADialog : ADialogItem {
             }
             router.items!!.values.forEach {
                 it.answers.forEach { asw ->
-                    if (asw.type == AnswerType.EXIT) {
+                    if (asw.type == AnswerType.EXIT || asw.type == AnswerType.ENTER) {
                         answersList.add(asw)
                     }
                 }
