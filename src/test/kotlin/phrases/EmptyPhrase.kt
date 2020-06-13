@@ -1,6 +1,10 @@
-package dialog.system.models.items.phrase
+package phrases
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
+import dialog.system.models.items.phrase.AnswerChooser
+import dialog.system.models.items.phrase.PhraseChooser
+import dialog.system.models.items.phrase.PhrasePrinter
+import dialog.system.models.items.phrase.SimplePhrase
 
 class EmptyPhrase(id: String) : SimplePhrase(id, arrayOf(""), arrayOf(
     Answer("", "")

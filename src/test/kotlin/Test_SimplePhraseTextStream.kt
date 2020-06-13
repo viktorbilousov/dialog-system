@@ -1,10 +1,11 @@
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import dialog.system.models.Answer
-import dialog.system.models.AnswerType
+import com.beust.klaxon.KlaxonException
+import dialog.system.models.answer.Answer
+import dialog.system.models.answer.AnswerType
 import dialog.system.models.items.text.PhraseText
-import dialog.system.models.items.text.PhraseTextStream
+import dialog.system.io.PhraseTextStream
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,7 +20,7 @@ class Test_SimplePhraseTextStream {
 
         val pathToFile = "./src/test/resources/test_readMultiplyPhraseText.json"
         val expectedInput = Klaxon().parseJsonArray(FileReader(pathToFile))
-        val actualInput = PhraseTextStream.readMany(pathToFile) as Array<PhraseText>
+        val actualInput = PhraseTextStream.read(pathToFile) as List<PhraseText>
 
         assertEquals(expectedInput.size, actualInput.size)
 
@@ -33,7 +34,7 @@ class Test_SimplePhraseTextStream {
 
         val pathToFile = "./src/test/resources/test_readSinglePhraseText.json"
         val input = Klaxon().parseJsonObject(FileReader(pathToFile))
-        val actualPhraseText = PhraseTextStream.readOne(pathToFile) as PhraseText
+        val actualPhraseText = PhraseTextStream.read(pathToFile)?.get(0)!!
 
         testPhraseTextWithJsonObject(actualPhraseText, input)
 
@@ -41,31 +42,21 @@ class Test_SimplePhraseTextStream {
 
     @Test fun readOne_EmptyFile(){
         val pathToFile = "./src/test/resources/writeSinglePhraseText1234.json"
-        assertThrows<FileNotFoundException>{ PhraseTextStream.readOne(pathToFile)}
+        assertThrows<FileNotFoundException>{ PhraseTextStream.read(pathToFile)}
     }
     @Test fun readMany_EmptyFile(){
         val pathToFile = "./src/test/resources/writeSinglePhraseText1234.json"
-        assertThrows<FileNotFoundException>{ PhraseTextStream.readMany(pathToFile)}
-    }
-
-    @Test fun readMany_objectFile(){
-        val pathToFile = "./src/test/resources/test_readSinglePhraseText.json"
-        assertThrows<IllegalArgumentException>{ PhraseTextStream.readMany(pathToFile)}
-    }
-
-    @Test fun readOne_arrayFile(){
-        val pathToFile = "./src/test/resources/test_readMultiplyPhraseText.json"
-        assertThrows<IllegalArgumentException>{ PhraseTextStream.readOne(pathToFile)}
+        assertThrows<FileNotFoundException>{ PhraseTextStream.read(pathToFile)}
     }
 
     @Test fun readOne_badFile(){
         val pathToFile = "./src/test/resources/test_readSinglePhraseText_bad.json"
-        assertThrows<IllegalArgumentException>{ PhraseTextStream.readOne(pathToFile)}
+        assertThrows<KlaxonException>{ PhraseTextStream.read(pathToFile)}
     }
 
     @Test fun readMany_badFile(){
         val pathToFile = "./src/test/resources/test_readMultiplyPhraseText_bad.json"
-        assertThrows<IllegalArgumentException>{ PhraseTextStream.readOne(pathToFile)}
+        assertThrows<KlaxonException>{ PhraseTextStream.read(pathToFile)}
     }
 
     @Test

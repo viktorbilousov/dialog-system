@@ -1,29 +1,33 @@
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
-import dialog.system.models.Answer
-import dialog.system.models.AnswerType
+import dialog.system.models.answer.Answer
+import dialog.system.models.answer.AnswerType
 import dialog.system.models.Indexable
 import dialog.system.models.items.ADialogItem
 
 import dialog.system.models.router.Router
-import dialog.system.models.items.phrase.EmptyPhrase
+import phrases.EmptyPhrase
 import dialog.system.models.items.phrase.SimplePhrase
 import dialog.system.models.items.text.PhraseText
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import dialog.system.tools.RouterTester
+import dialog.system.models.router.RouterTester
+import org.junit.jupiter.api.Assertions
+import utils.TestItemsFabric
 import java.lang.IllegalArgumentException
+import java.lang.NullPointerException
 import kotlin.streams.toList
 
 class Test_RouterTester {
     @Test
     fun isGraphRelated_good(){
-        val graph: Graph = createRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = hashMapOf( Pair("id",
             EmptyPhrase("id") as ADialogItem
         ))
         val router = Router("id", graph, items)
+        router.startPointId = "1"
         try{
             RouterTester.test(router).isGraphRelated()
         }catch (e: IllegalAccessException){
@@ -34,19 +38,19 @@ class Test_RouterTester {
 
     @Test
      fun isGraphRelated_bad(){
-        val graph: Graph = createNotRelatedTestGraph();
-        val items = hashMapOf<String, ADialogItem>( Pair("id", EmptyPhrase(
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
+        val items = hashMapOf( Pair("id", EmptyPhrase(
             "id"
         ) as ADialogItem
         ))
         val router = Router("id", graph, items)
-        assertThrows<IllegalAccessException> {  RouterTester.test(router).isGraphRelated()}
+        assertThrows<NullPointerException> {  RouterTester.test(router).isGraphRelated()}
 
     }
 
     @Test
      fun isAllItemsHasVertexes_good(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(5);
         val router = Router("id", graph, items);
         try{
@@ -59,7 +63,7 @@ class Test_RouterTester {
 
     @Test
     fun isAllItemsHasVertexes_bad(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(20)
         val router = Router("id", graph, items);
 
@@ -69,7 +73,7 @@ class Test_RouterTester {
 
     @Test
      fun isAllVertexHasItems_good(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(20)
         val router = Router("id", graph, items);
         try{
@@ -82,7 +86,7 @@ class Test_RouterTester {
 
     @Test
      fun isAllVertexHasItems_bad(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> { RouterTester.test(router).isAllVertexHasItems()}
@@ -98,7 +102,7 @@ class Test_RouterTester {
 
     @Test
      fun emptyItemsList(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = hashMapOf<String, ADialogItem>()
         val router = Router("id", graph, items);
         assertThrows<IllegalAccessException> { RouterTester.test(router).isAllVertexHasItems()}
@@ -106,7 +110,7 @@ class Test_RouterTester {
 
     @Test
     fun startPoint_good(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         router.startPointId = "1";
@@ -120,36 +124,33 @@ class Test_RouterTester {
 
     @Test
     fun startPoint_bad(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
         router.startPointId = "112445";
-        assertThrows<IllegalAccessException> { RouterTester.test(router).checkStartPoint()}
+        assertThrows<NullPointerException> { RouterTester.test(router).checkStartPoint()}
     }
 
     @Test
    fun startPointNull(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
-        assertThrows<IllegalAccessException> { RouterTester.test(router).checkStartPoint()}
+        assertThrows<NullPointerException> { RouterTester.test(router).checkStartPoint()}
     }
 
     @Test
      fun startPointSetNull(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createMapWithSimplePhrase(10)
         val router = Router("id", graph, items);
-
-        assertThrows<IllegalArgumentException> {
-            router.startPointId = null;
-            RouterTester.test(router).checkStartPoint()
-        }
+        router.startPointId = null;
+        assertThrows<NullPointerException> { RouterTester.test(router).checkStartPoint()}
     }
 
     @Test
      fun isItemsLinkedRight_good(){
-        val graph: Graph = createRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createItemsListToRelatedGraph();
         val router = Router("id", graph, items);
         try{
@@ -163,15 +164,16 @@ class Test_RouterTester {
 
     @Test
     fun isItemsLinkedRight_bad(){
-        val graph: Graph = createNotRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createItemsListToRelatedGraph()
         val router = Router("id", graph, items);
+        router.removeItem(items["2"]!!, true)
         assertThrows<IllegalAccessException> {  RouterTester.test(router).isItemsLinkedCorrectly()}
     }
 
     @Test
     fun isAllTypeCorrect_good(){
-        val graph: Graph = createRelatedTestGraph();
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createItemsListToRelatedGraph()
         val router = Router("id", graph, items);
        try{
@@ -185,7 +187,7 @@ class Test_RouterTester {
 
     @Test
     fun isAllTypeCorrect_bad(){
-        val graph: Graph = createRelatedTestGraph()
+        val graph: Graph = TestItemsFabric.createRelatedTestGraph()
         val items = createItemsListToRelatedGraph()
         items["6"]!!.answers[0].type = AnswerType.EXIT
         val router = Router("id", graph, items)
@@ -302,50 +304,4 @@ class Test_RouterTester {
          */
     }
 
-
-    private fun createNotRelatedTestGraph(): Graph{
-        val graph: Graph = TinkerGraph();
-        val v = hashMapOf<Int, Vertex>()
-        for (i in 1 .. 11) {
-            v[i] =  graph.addVertex(i.toString())
-            v[i]!!.setProperty(Indexable.ID_NAME, i.toString())
-        }
-
-        graph.addEdge(null, v[11], v[2],"11->2")
-        graph.addEdge(null, v[1], v[2],"1->2")
-        graph.addEdge(null, v[2], v[3],"2->3")
-        graph.addEdge(null, v[2], v[4],"2->4")
-        graph.addEdge(null, v[3], v[5],"3->5")
-        graph.addEdge(null, v[3], v[6],"3->6")
-        graph.addEdge(null, v[4], v[7],"4->7")
-        graph.addEdge(null, v[4], v[7],"4->6")
-        graph.addEdge(null, v[7], v[8],"7->8")
-        graph.addEdge(null, v[9], v[10],"9->10")
-
-        return graph;
-    }
-
-    private fun createRelatedTestGraph(): Graph{
-        val graph: Graph = TinkerGraph();
-        val v = hashMapOf<Int, Vertex>()
-        for (i in 1 .. 11) {
-            v[i] =  graph.addVertex(i.toString())
-            v[i]!!.setProperty(Indexable.ID_NAME, i.toString())
-        }
-
-        graph.addEdge(null, v[11], v[2],"11->2")
-        graph.addEdge(null, v[1], v[2],"1->2")
-        graph.addEdge(null, v[2], v[3],"2->3")
-        graph.addEdge(null, v[2], v[4],"2->4")
-        graph.addEdge(null, v[3], v[5],"3->5")
-        graph.addEdge(null, v[3], v[6],"3->6")
-        graph.addEdge(null, v[4], v[7],"4->7")
-        graph.addEdge(null, v[4], v[6],"4->6")
-        graph.addEdge(null, v[7], v[8],"7->8")
-        graph.addEdge(null, v[5], v[9],"5->9")
-        graph.addEdge(null, v[6], v[9],"6->9")
-        graph.addEdge(null, v[9], v[10],"9->10")
-
-        return graph;
-    }
 }
