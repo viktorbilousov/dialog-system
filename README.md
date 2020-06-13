@@ -1,9 +1,9 @@
 
-#Dialog System
+# Dialog System
 
 This Library is used to create, simulate, and dynamic change progress of a dialog. 
 
-##Quick start
+## Quick start
 
 ```kotlin
    val dialog = Dialog("dialog");
@@ -25,9 +25,9 @@ This Library is used to create, simulate, and dynamic change progress of a dialo
     dialog.run()                    // start this dialog 
 ```
 
-#Idee Description
+# Main classes Description 
 
-##ADialogItem
+## ADialogItem
 
 ![DialogItemDiagram](.readme_images/DialogItemDiagram.png)
 
@@ -48,7 +48,15 @@ it contains an array of all possible answers and 3 public methods:
  val answer = item.run();
 ``` 
 
-##Phrases
+## Answer 
+Answer describes an answer or reaction from a text phrase and say a `Dialog` what item has been run next. 
+
+There are 3 types of Answers: 
+* `Simple` - lead to next phrase inside one Dialog
+* `Exit` - indicates the end of the dialog
+* `Enter` - lead to nex dialog inside this dialog 
+
+## Phrases
 
 `APhrase` is a container for short `phrase text` of a speech and reaction of this phrase (`Answer`). 
 
@@ -65,15 +73,7 @@ All Phrases used :
 * `AnswerChooser` - chooses one answer (default using the console)
 * `PhrasePrinter` - print chooses phrase by a PhraseChooser and all answers
 
-###Answer 
-Answer describes an answer or reaction from a text phrase and say a `Dialog` what item has been run next. 
-
-There are 3 types of Answers: 
-* `Simple` - lead to next phrase inside one Dialog
-* `Exit` - indicates the end of the dialog
-* `Enter` - lead to nex dialog inside this dialog 
-
-###Simple Phrase
+### Simple Phrase
 This is default Phrase without additional listeners 
 
 ```kotlin
@@ -81,7 +81,7 @@ This is default Phrase without additional listeners
  phrase.run();
 ```
 
-###FilteredPhrase
+### FilteredPhrase
 
 Filtered Phrase uses filters and dynamic changing of `text phrases` and `answers`.
 There are 3 filters type: 
@@ -174,14 +174,14 @@ phrase text:
 */
 ```
 
-###DebugFilteredPhrase
+### DebugFilteredPhrase
 
 Has additional listeners for debugging
 
 * `phrase.beforeFilter(..)`  - called before Beginn of first filter 
 * `phrase.afterFilter(..)`  - called after End of last filter
 
-##Dialog
+## Dialog
 
 >  Example of dialog  
 ![DialogExample](.readme_images/DialogExample.png)
@@ -212,7 +212,20 @@ Dialog includes a `Router`, which include graph of items of this dialog.
     dialog.run(); // start this dialog     
 ```
 
-### Router
+
+
+### DebugDialog
+
+Has additional listeners for debugging
+
+  * `transformCurrentItem` - map current ADialogItem 
+  * `transformIfCurrentItemIsPhrase`  -  map current Item if it is an APhrase
+  * `transformIfCurrentItemIsDialog`  -  map current Item if it is an ADialog
+  * `transformResultAnswer`  -  map answer from a current phrase in this dialog
+  * `changeResult` - map result answer of hole dialog
+  * `onExit` - event, when current item return EXIT/ENTER Answer type
+
+## Router
 
 Router describes sequence of `DialogItems` in a ADialog. It includes list of `Dialog`
 items and graph of transitions between these items.    
@@ -236,20 +249,8 @@ Its possible with `RouterTester` make some simple test of diaalog:
                 .isAllVertexHasItems() // all items from graph have item in list 
                 .isFullFunctional() // list of vertex == list of items
 ``` 
-  
 
-### DebugDialog
-
-Has additional listeners for debugging
-
-  * `transformCurrentItem` - map current ADialogItem 
-  * `transformIfCurrentItemIsPhrase`  -  map current Item if it is an APhrase
-  * `transformIfCurrentItemIsDialog`  -  map current Item if it is an ADialog
-  * `transformResultAnswer`  -  map answer from a current phrase in this dialog
-  * `changeResult` - map result answer of hole dialog
-  * `onExit` - event, when current item return EXIT/ENTER Answer type
-
-## Input / Output to file
+# Input / Output to file
 
 ```kotlin
    val phrase : APhrase = ...

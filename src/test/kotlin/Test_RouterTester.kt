@@ -1,11 +1,8 @@
 import com.tinkerpop.blueprints.Graph
-import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import dialog.system.models.answer.Answer
 import dialog.system.models.answer.AnswerType
-import dialog.system.models.Indexable
 import dialog.system.models.items.ADialogItem
-
 import dialog.system.models.router.Router
 import phrases.EmptyPhrase
 import dialog.system.models.items.phrase.SimplePhrase
@@ -13,9 +10,7 @@ import dialog.system.models.items.text.PhraseText
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import dialog.system.models.router.RouterTester
-import org.junit.jupiter.api.Assertions
 import utils.TestItemsFabric
-import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import kotlin.streams.toList
 
@@ -289,19 +284,6 @@ class Test_RouterTester {
             .map{ SimplePhrase(it.id, it.text[0], it.answers) }
             .toList().associate { Pair(it.id, it ) } as HashMap<String, ADialogItem>
 
-
-        /*
-
-        graph.addEdge(null, v[11], v[2],"11->2")
-        graph.addEdge(null, v[1], v[2],"1->2")
-        graph.addEdge(null, v[2], v[3],"2->3")
-        graph.addEdge(null, v[2], v[4],"2->4")
-        graph.addEdge(null, v[3], v[5],"3->5")
-        graph.addEdge(null, v[3], v[6],"3->6")
-        graph.addEdge(null, v[4], v[7],"4->7")
-        graph.addEdge(null, v[7], v[8],"7->8")
-        graph.addEdge(null, v[9], v[10],"9->10")
-         */
     }
 
 }
