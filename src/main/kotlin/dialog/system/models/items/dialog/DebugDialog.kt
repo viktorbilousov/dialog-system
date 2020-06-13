@@ -1,7 +1,7 @@
 package dialog.system.models.items.dialog
 
-import dialog.system.models.Answer
-import dialog.system.models.AnswerType
+import dialog.system.models.answer.Answer
+import dialog.system.models.answer.AnswerType
 import dialog.system.models.items.ADialogItem
 import dialog.system.models.items.phrase.APhrase
 import dialog.system.models.items.runner.DefaultRunner

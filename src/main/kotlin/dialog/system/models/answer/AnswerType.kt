@@ -1,4 +1,4 @@
-package dialog.system.models
+package dialog.system.models.answer
 
 enum class AnswerType {
     ENTER,

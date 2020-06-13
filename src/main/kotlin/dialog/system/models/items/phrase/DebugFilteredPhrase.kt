@@ -1,9 +1,8 @@
 package dialog.system.models.items.phrase
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.models.items.runner.DebugRunner
 import dialog.system.tools.AnswersTool
-import java.lang.invoke.SerializedLambda
 
 open class DebugFilteredPhrase(id: String, phrases: Array<String>,  answers: Array<Answer>): AFilteredPhrase(id, phrases, answers){
 
@@ -11,7 +10,7 @@ open class DebugFilteredPhrase(id: String, phrases: Array<String>,  answers: Arr
    // constructor(filteredPhrase: FilteredPhrase) : this(filteredPhrase.id, filteredPhrase.phrases, filteredPhrase.answers)
 
      init {
-         this.runner = DebugRunner();
+         this.runner = DebugRunner()
      }
 
     final override fun body(): Answer {
@@ -25,7 +24,8 @@ open class DebugFilteredPhrase(id: String, phrases: Array<String>,  answers: Arr
 
         val phrase = phraseChooser.choose(bodyAnswer.phrases)
         phrasePrinter.printTextDialog(phrase, bodyAnswer.answers)
-        return answerChooser.chooseAnswer(bodyAnswer.answers)
+        val answer = answerChooser.chooseAnswer(bodyAnswer.answers)
+        return answerFilter(answer)
     }
 
     public var beforeFilter : (answers: Array<Answer>, phrases: Array<String>, it: AFilteredPhrase) -> FilterResult =

@@ -1,8 +1,9 @@
 package dialog.system.models.items.text
 
 import com.beust.klaxon.Json
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.models.Indexable
+import dialog.system.models.items.phrase.APhrase
 import dialog.system.models.items.phrase.SimplePhrase
 
 class PhraseText: Indexable {
@@ -21,15 +22,13 @@ class PhraseText: Indexable {
     companion object{
         private val DEF_CLASS = SimplePhrase::class.java.name.toString()
     }
+    constructor() : this("NAN", arrayOf(), arrayOf() )
 
+    constructor(phrase: APhrase): this(phrase.id, phrase.phrases, phrase.answers, phrase::class.java.name)
 
-    constructor(id: String, text: Array<String>, answers: Array<Answer>): this(id, text, answers,
-        DEF_CLASS
-    ) {}
+    constructor(id: String, text: Array<String>, answers: Array<Answer>): this(id, text, answers, DEF_CLASS)
 
-    constructor(id: String, text: String, answers: Array<Answer>): this(id, text, answers,
-        DEF_CLASS
-    ) {}
+    constructor(id: String, text: String, answers: Array<Answer>): this(id, text, answers, DEF_CLASS)
 
     constructor(id: String, text: Array<String>, answers: Array<Answer>, clazz: Class<*>)  {
         this.id = id

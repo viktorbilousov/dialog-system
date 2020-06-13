@@ -1,13 +1,13 @@
 package dialog.system.tools
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.models.items.phrase.AnswerChooser
 import java.util.*
 
 class ConsoleAnswerChooser : AnswerChooser {
 
     override fun chooseAnswer(answers: Array<Answer>): Answer {
-        return input(answers);
+        return input(answers)
     }
 
     public fun input(answers: Array<Answer>): Answer {

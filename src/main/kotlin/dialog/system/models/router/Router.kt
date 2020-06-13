@@ -2,10 +2,13 @@ package dialog.system.models.router
 
 import com.beust.klaxon.Json
 import com.tinkerpop.blueprints.Direction
-import dialog.system.models.Indexable;
+import com.tinkerpop.blueprints.Edge
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
-import dialog.system.models.Answer
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph
+import dialog.system.models.Indexable
+import dialog.system.models.answer.Answer
+import dialog.system.models.answer.AnswerType
 import dialog.system.models.items.ADialogItem
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,103 +30,77 @@ class Router : Indexable {
     public var isResetToStart = false
 
     @Json(ignored = true)
-    public var items : HashMap<String, ADialogItem>? = null
-    set(value) {
-        if(value == null) {
-            throw IllegalArgumentException("items can not set items as null")
-        }
-        field = value;
-    }
+    public var items : HashMap<String, ADialogItem> = hashMapOf()
+    private set
 
     @Json(name = "startPointId")
     public var startPointId: String? = null
-        get
-        set(value) {
-            if(value == null) {
-                throw IllegalArgumentException("id can not be null!")
-            }
-            field = value
-        };
+
 
     @Json( ignored = true)
-    public val startPoint: ADialogItem
+    public val startPoint: ADialogItem?
         get() {
-            if (startPointId == null) {
-                throw IllegalArgumentException("start point is null!")
-            }
-            return getItem(startPointId!!)
+            return if(startPointId == null) null
+            else items[startPointId!!]
         }
 
     @Json( ignored = true)
-    public val graph: Graph
-        get
+    public val graph: RouterGraph
 
-
-
-    constructor(id: String, graph: Graph) {
-        this.graph = graph
-        this.id = id
-    }
-
-    constructor(id: String, graph: Graph, items: HashMap<String, ADialogItem>?) {
-        this.graph = graph
-        this.id = id
-        this.items = items
-    }
-
-    constructor(id: String, graph: Graph, items: HashMap<String, ADialogItem>?, startPointId: String) {
-        this.graph = graph
-        this.id = id
-        this.items = items
-        this.startPointId = startPointId
-    }
+    constructor(id: String) : this(id, TinkerGraph(), hashMapOf()){ }
+    constructor(id: String, graph: Graph) : this(id, graph, hashMapOf()){ }
+    constructor(id: String, graph: Graph, items: HashMap<String, ADialogItem>) : this (id, graph, items, null, false)
+    constructor(id: String, graph: Graph, items: HashMap<String, ADialogItem>, startPointId: String) : this(id, graph, items, startPointId, false)
 
     constructor(
         id: String,
         graph: Graph,
-        items: HashMap<String, ADialogItem>?,
-        startPointId: String,
+        items: HashMap<String, ADialogItem>,
+        startPointId: String?,
         isResetToStart: Boolean
-    ) : this(id, graph, items, startPointId) {
-        this.isResetToStart = isResetToStart;
+    ) {
+        this.graph = RouterGraph(graph)
+        this.id = id
+        this.items = items
+        this.startPointId = startPointId
+        this.isResetToStart = isResetToStart
     }
 
+    public fun connectToItems(items: HashMap<String, ADialogItem>){
+        this.items = items
+    }
+    public fun addAll(items: Collection<ADialogItem>){
+        items.forEach { addItem(it) }
+    }
 
     public fun getNext(answer: Answer): ADialogItem {
         logger.info("[$id] << intput: $answer")
         val res = getItem(answer.id)
-        if (currentPoint != null && !isConnected( currentPoint!!.id, res.id)) {
+        if (currentPoint != null && !graph.isConnected( currentPoint!!.id, res.id)) {
             logger.error("Items '${currentPoint?.id}' and '${res.id}' not connected")
-            throw throw IllegalAccessException("Items '${currentPoint?.id}' and '${res.id}' not connected");
+            throw throw IllegalAccessException("Items '${currentPoint?.id}' and '${res.id}' not connected")
         }
-        currentPoint = res;
+        currentPoint = res
         logger.info("[$id] >> output item: ${res.id}")
-        return res;
+        return res
     }
 
     public fun goTo(id: String) : ADialogItem?{
         logger.info("[$this.id] << goTo: $id")
-        if(items == null){
-            throw IllegalAccessException("Item is null!")
-        }
         val res =
             try{
-                getItem(id);
+                getItem(id)
             }catch (e: Exception){
-                return null;
+                return null
             }
         currentPoint = res
         logger.info("[$id] >> output item: ${res.id}")
-        return res;
+        return res
     }
 
     private fun getItem(id: String): ADialogItem {
         logger.info("[${this.id}] >> get: $id")
-        if(items == null){
-            logger.error("Items is null!")
-            throw IllegalAccessException("Items is null!")
-        }
-        if (items!![id] == null) {
+        if (items[id] == null) {
             logger.error("${this.id}] Item id='$id' not found")
             throw IllegalAccessException("${this.id}] Item id='$id' not found")
         }
@@ -131,57 +108,33 @@ class Router : Indexable {
             logger.error("router ${this.id} not containd Item id=$id")
             throw IllegalAccessException("router ${this.id} not containd Item id=$id")
         }
-        logger.info("[$this.id] << get: return: ${items!![id]!!}")
-        return items!![id]!!
+        logger.info("[$this.id] << get: return: ${items[id]!!}")
+        return items[id]!!
     }
 
     public fun addItem(item: ADialogItem) {
         logger.info("[${this.id} >> addItem: $item")
 
-        if(items == null){
-            logger.error("Items is null!")
-            throw IllegalAccessException("Items is null!")
+        if (items[item.id] != null) {
+            logger.warn("$id: Rewrite ${items[item.id]?.id} to ${item.id}")
         }
-        else if (items!![item.id] != null) {
-            logger.warn("$id: Rewrite ${items!![item.id]?.id} to ${item.id}")
-        }
-        items!![item.id] = item;
+        items[item.id] = item
+
+        graph.addItem(item)
+
         logger.info("[$this.id] << addItem: OK")
     }
 
+    public fun removeItem(item: ADialogItem, onlyFromGraph: Boolean = false){
+        if(!onlyFromGraph) {
+            items.remove(item.id)
+        }
+        graph.removeItem(item)
+    }
+
+
     public fun contains(id: String): Boolean{
-        return getVertex(id) != null  && items!![id] != null;
+        return graph.contains(id)  && items[id] != null
     }
-
-    private fun getVertex(itemId: String): Vertex?{
-        for (vertex in graph.vertices) {
-            if(vertex.getProperty<String>(Indexable.ID_NAME) == itemId){
-                return vertex;
-            }
-        }
-        logger.warn("vertex of item $itemId not found")
-        return null;
-    }
-
-   /* private fun isConnected(source: DialogItem, dest: DialogItem): Boolean {
-        for (edge in graph.edges) {
-            val v1 = edge.getVertex(Direction.OUT).getProperty<String>(Indexable.ID_NAME)
-            val v2 = edge.getVertex(Direction.IN).getProperty<String>(Indexable.ID_NAME)
-            if (source.id == v1 && dest.id == v2) return true;
-        }
-        return false;
-    }*/
-
-    private fun isConnected(sourceId: String, destId:String) : Boolean {
-        getVertex(sourceId)?.getEdges(Direction.OUT)?.forEach{
-            if(it.getVertex(Direction.IN).getProperty(Indexable.ID_NAME) as String == destId) return true;
-        }
-        return false;
-    }
-
-    override fun toString(): String {
-        return "{id=$id, startPointId=$startPointId, graph=$graph}"
-    }
-
 
 }

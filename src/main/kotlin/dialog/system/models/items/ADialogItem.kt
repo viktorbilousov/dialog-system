@@ -1,8 +1,7 @@
 package dialog.system.models.items
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.models.Indexable
-import dialog.system.models.items.phrase.APhrase
 import dialog.system.models.items.runner.DialogItemRunner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -30,11 +29,11 @@ abstract class ADialogItem : Indexable {
         logger.info("[${id}] >> run")
         val res = runner.runItem(this)
         logger.info("[${id}] << run")
-        return res;
+        return res
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null ) return false;
+        if (other == null ) return false
         else if (other !is ADialogItem) return false
 
         return other.id == id

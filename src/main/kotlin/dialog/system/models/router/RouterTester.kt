@@ -1,36 +1,35 @@
-package dialog.system.tools
+package dialog.system.models.router
 
 import com.tinkerpop.blueprints.Direction
 import com.tinkerpop.blueprints.Vertex
-import dialog.system.models.Answer
-import dialog.system.models.AnswerType
+import dialog.system.models.answer.Answer
+import dialog.system.models.answer.AnswerType
 import dialog.system.models.Indexable
 import dialog.system.models.items.ADialogItem
-import dialog.system.models.router.Router
 import java.lang.IllegalArgumentException
+import java.lang.NullPointerException
 
 
 class RouterTester {
     companion object{
         fun test(router : Router): RouterTestClass {
-            return RouterTestClass(router);
+            return RouterTestClass(router)
         }
 
     }
 
     class RouterTestClass(private val router : Router){
-        private val graph  = router.graph
+        private val graph  = router.graph.graph
         private val items : HashMap<String, ADialogItem>
         private val vertexMap = HashMap<String, Vertex>()
         init {
-            if(router.items == null ) throw IllegalAccessException("items list is null!")
-            this.items = router.items!!
+            this.items = router.items
             if(items.isEmpty()) throw IllegalAccessException("items list is empty!")
             if(!graph.vertices.iterator().hasNext()) throw IllegalAccessException("vertices in the graph is empty!")
            // if(!graph.edges.iterator().hasNext()) throw IllegalAccessException("edges in the graph is empty!")
 
             graph.vertices.forEach{
-                vertexMap[it.getProperty(Indexable.ID_NAME)] = it;
+                vertexMap[it.getProperty(Indexable.ID_NAME)] = it
             }
         }
 
@@ -38,7 +37,7 @@ class RouterTester {
         public fun isAllVertexHasItems() : RouterTestClass {
             val list = mutableListOf<String>()
             graph.vertices.forEach{
-                val id = it.getProperty<String>(Indexable.ID_NAME);
+                val id = it.getProperty<String>(Indexable.ID_NAME)
                 if(items[id] == null) {
                     list.add("id:${it.id} item:$id")
                 }
@@ -52,9 +51,9 @@ class RouterTester {
         @Throws(IllegalAccessException::class)
         public fun checkStartPoint() : RouterTestClass {
            try{
-               router.startPoint
-           }catch (e: IllegalArgumentException){
-               throw IllegalAccessException(e.message);
+               router.startPoint!!
+           }catch (e: Exception){
+               throw NullPointerException(e.message)
            }
             return this
         }
@@ -65,7 +64,7 @@ class RouterTester {
 
            items.forEach{
                if(vertexMap[it.key] == null){
-                   list.add(it.key);
+                   list.add(it.key)
                }
            }
             if(list.isNotEmpty()){
@@ -77,7 +76,7 @@ class RouterTester {
         @Throws(IllegalAccessException::class)
         public fun isFullFunctional() : RouterTestClass {
 
-            var exceptionText = "";
+            var exceptionText = ""
 
             try {
                 isAllItemsHasVertex()
@@ -91,11 +90,11 @@ class RouterTester {
                 if(exceptionText.isNotEmpty()){
                     exceptionText += " && "
                 }
-                exceptionText += e.message;
+                exceptionText += e.message
             }
 
             if(exceptionText.isNotEmpty()){
-                throw IllegalAccessException(exceptionText);
+                throw IllegalAccessException(exceptionText)
             }
             return this
 
@@ -103,9 +102,9 @@ class RouterTester {
 
         @Throws(IllegalAccessException::class)
         public fun isGraphRelated()  : RouterTestClass {
-            val startPointVetex = findVertex(router.startPointId!!) ?:
+            val startPointVertex = findVertex(router.startPointId!!) ?:
                 throw IllegalArgumentException("router not contain start Point ${router.startPointId}")
-            val arr = bfs(startPointVetex.id as String);
+            val arr = bfs(startPointVertex.id as String)
             if(arr.size != graph.vertices.count()){
                val list = mutableListOf<String>()
                  graph.vertices.forEach {
@@ -124,10 +123,10 @@ class RouterTester {
             for (item in items.values) {
                 if(vertexMap[item.id] == null) {
                     continue
-                };
+                }
                item.answers.forEach {
                    if(!isConnected(item.id, it.id) && it.type == AnswerType.SIMPLE){
-                       errList[item.id] = it.id;
+                       errList[item.id] = it.id
                    }
                }
             }
@@ -139,9 +138,9 @@ class RouterTester {
 
         private fun isConnected(sourceId: String, destId:String) : Boolean{
             vertexMap[sourceId]?.getEdges(Direction.OUT)?.forEach{
-                if(it.getVertex(Direction.IN).getProperty(Indexable.ID_NAME) as String == destId) return true;
+                if(it.getVertex(Direction.IN).getProperty(Indexable.ID_NAME) as String == destId) return true
             }
-            return false;
+            return false
         }
 
         public fun checkTypesOfPhases() : RouterTestClass {
@@ -154,19 +153,19 @@ class RouterTester {
                     if (it.getVertices(Direction.OUT).count() == 0) {
                         items[it.id]?.answers?.forEach { ans ->
                             if (ans.type != AnswerType.EXIT) {
-                                errList_exit.add(ans);
+                                errList_exit.add(ans)
                             }
                         }
                    /* } else if (it.getVertices(Direction.IN).count() == 0) {
                         items[it.id]?.getAnswers()?.forEach { ans ->
                             if (ans.type != AnswerType.ENTER) {
-                                errList_enter.add(ans);
+                                errList_enter.add(ans)
                             }
                         }*/
                     } else{
                         items[it.id]?.answers?.forEach { ans ->
                             if (ans.type != AnswerType.SIMPLE) {
-                                errList_simple.add(ans);
+                                errList_simple.add(ans)
                             }
                         }
                     }
@@ -180,31 +179,31 @@ class RouterTester {
                             "must EXIT: ${errList_exit.toTypedArray().contentToString()}"
                 )
             }
-            return this;
+            return this
         }
 
         private fun bfs(startPointId: String): Array<String>{
-            val queue = mutableListOf<String>();
+            val queue = mutableListOf<String>()
             val passedVertexes = mutableSetOf<String>()
-            var currentVertex = graph.getVertex(startPointId).id as String;
+            var currentVertex = graph.getVertex(startPointId).id as String
             passedVertexes.add(currentVertex)
-            queue.add(currentVertex);
+            queue.add(currentVertex)
             while (queue.isNotEmpty()){
-                currentVertex = queue.removeAt(queue.size-1);
+                currentVertex = queue.removeAt(queue.size-1)
                 graph.getVertex(currentVertex).getEdges(Direction.BOTH).forEach{
                     for(i in 0..1) {
-                        var vertexId = it.getVertex(Direction.IN).id as String;
+                        var vertexId = it.getVertex(Direction.IN).id as String
                         if(i == 1){
-                            vertexId = it.getVertex(Direction.OUT).id as String;
+                            vertexId = it.getVertex(Direction.OUT).id as String
                         }
                         if (!passedVertexes.contains(vertexId)) {
-                            passedVertexes.add(vertexId);
-                            queue.add(vertexId);
+                            passedVertexes.add(vertexId)
+                            queue.add(vertexId)
                         }
                     }
                 }
             }
-            return passedVertexes.toTypedArray();
+            return passedVertexes.toTypedArray()
         }
 
         private fun findVertex(item_id: String) : Vertex?{

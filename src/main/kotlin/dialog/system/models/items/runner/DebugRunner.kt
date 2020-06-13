@@ -1,25 +1,25 @@
 package dialog.system.models.items.runner
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.models.items.ADialogItem
 import java.lang.IllegalStateException
 
 public class DebugRunner : DialogItemRunner {
     override fun runItem(item: ADialogItem): Answer {
        try {
-           enter(item);
+           enter(item)
            item.before()
            preBody(item)
            val res = item.body()
            postBody(item, res)
-           item.after(res);
+           item.after(res)
            exit(item, res)
            return res
        }catch (e: IllegalStateException){
            if(e.message == "restart"){
-             return runItem(item);
+             return runItem(item)
            }
-           throw e;
+           throw e
        }
     }
 

@@ -1,6 +1,6 @@
 package dialog.system.models.items.phrase
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.tools.AnswersTool
 
 open class SimplePhrase(id: String, phrases: Array<String>,  answers: Array<Answer>) : APhrase(id, phrases, answers)  {

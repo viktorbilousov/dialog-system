@@ -1,8 +1,9 @@
-package dialog.system.models
+package dialog.system.models.answer
 
 import com.beust.klaxon.Json
+import dialog.system.models.Indexable
 
- class Answer : Indexable {
+class Answer : Indexable {
 
      @Json(name = "answ_id")
      override val id: String
@@ -45,13 +46,13 @@ import com.beust.klaxon.Json
      }
 
      constructor(id: String, text: String) {
-         this.id = id;
-         this.text = text;
-         this.type = AnswerType.SIMPLE;
+         this.id = id
+         this.text = text
+         this.type = AnswerType.SIMPLE
      }
 
      constructor(id: String, text: String, answerType: AnswerType) : this(id, text) {
-         this.type = answerType;
+         this.type = answerType
      }
 
      override fun toString(): String {
@@ -59,7 +60,7 @@ import com.beust.klaxon.Json
      }
 
      override fun equals(other: Any?): Boolean {
-         if (other == null ) return false;
+         if (other == null ) return false
          else if (other !is Answer) return false
 
          return other.id == id

@@ -1,6 +1,6 @@
 package dialog.system.models.items.phrase
 
-import dialog.system.models.Answer
+import dialog.system.models.answer.Answer
 import dialog.system.models.items.ADialogItem
 import dialog.system.models.items.runner.DefaultRunner
 import dialog.system.models.items.runner.DialogItemRunner
@@ -21,8 +21,8 @@ abstract class APhrase  : ADialogItem {
                 val res = T::class.java
                     .getConstructor(String::class.java, Array<String>::class.java, Array<Answer>::class.java)
                     .newInstance(phrase.id, phrase.phrases, phrase.answers) as T
-                res.initFrom(phrase);
-                return res;
+                res.initFrom(phrase)
+                return res
             }catch (e: Exception){
                 val logger = LoggerFactory.getLogger(APhrase::class.java) as Logger
                 logger.error("class not has constructor (id: String, phrases: Array<String>,  answers: Array<Answer>)", e)
@@ -33,9 +33,9 @@ abstract class APhrase  : ADialogItem {
 
     override fun initFrom(source: ADialogItem) {
         super.initFrom(source)
-        if (source !is APhrase) return;
-        this.phraseChooser = source.phraseChooser;
-        this.answerChooser = source.answerChooser;
+        if (source !is APhrase) return
+        this.phraseChooser = source.phraseChooser
+        this.answerChooser = source.answerChooser
         this.phrasePrinter = source.phrasePrinter
 
     }
@@ -46,10 +46,10 @@ abstract class APhrase  : ADialogItem {
     final override val id: String
 
     protected var count = 0
-        private set;
+        private set
 
     protected fun incrementCounter(){
-        count++;
+        count++
     }
     protected fun resetCount(){
         count = 0
@@ -60,22 +60,22 @@ abstract class APhrase  : ADialogItem {
     public var answerChooser : AnswerChooser = ConsoleAnswerChooser()
 
     public fun updatePrinter(newPrinter: (oldPrinter: PhrasePrinter) -> PhrasePrinter){
-        this.phrasePrinter = newPrinter(this.phrasePrinter);
+        this.phrasePrinter = newPrinter(this.phrasePrinter)
     }
 
     public fun updateAnswerChooser(newAnswerChooser: (oldAnswerChooser: AnswerChooser) -> AnswerChooser){
-        this.answerChooser = newAnswerChooser(this.answerChooser);
+        this.answerChooser = newAnswerChooser(this.answerChooser)
     }
 
     public fun updatePhraseChooser(newPhraseChooser: (oldPhraseChooser: PhraseChooser) -> PhraseChooser){
-        this.phraseChooser= newPhraseChooser(this.phraseChooser);
+        this.phraseChooser= newPhraseChooser(this.phraseChooser)
     }
 
     public override val answers: Array<Answer>
-        get() = texts.answers;
+        get() = texts.answers
 
     public val phrases: Array<String>
-        get() = texts.text;
+        get() = texts.text
 
     constructor(id: String, phrases: Array<String>,  answers: Array<Answer>){
         this.id = id
@@ -98,7 +98,7 @@ abstract class APhrase  : ADialogItem {
     }
 
     override var runner: DialogItemRunner =
-        DefaultRunner();
+        DefaultRunner()
 
     override fun toString(): String {
         return "{${this.javaClass.simpleName}: id=$id, phrases=${texts}}"
